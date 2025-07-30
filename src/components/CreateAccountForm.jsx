@@ -17,8 +17,8 @@ function CreateAccountForm(props) {
 
     const newUser = {
       name: user.userName,
-      userEmail: user.userEmail,
-      userPassword: user.userPassword,
+      email: user.userEmail,
+      password: user.userPassword,
     };
 
     try {

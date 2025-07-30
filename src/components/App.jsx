@@ -6,14 +6,19 @@ import Header from "./Header";
 
 function App() {
   const [userIsCreated, setUserIsCreated] = useState(true);
-  const [userId, setUserId] = useState(null);
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
   function handleCreateAccountClick() {
     setUserIsCreated(false);
   }
 
-  function handleLogin(userIdFromLogin) {
-    setUserId(userIdFromLogin);
+  function handleLogin(userObject) {
+    setLoggedInUser(userObject);
+  }
+
+  function handleLogout() {
+    setLoggedInUser(null);
+    setUserIsCreated(true);
   }
 
   return (
@@ -24,9 +29,13 @@ function App() {
           <Route
             path="/"
             element={
-              userId ? (
+              loggedInUser ? (
                 <div>
-                  <h2>Welcome, user {userId}!</h2>
+                  <h2>Welcome, {loggedInUser.name}!</h2>
+                  <p>Your user ID is: {loggedInUser.id}</p>
+                  <button onClick={handleLogout} className="form-button">
+                    Log out
+                  </button>
                   {/* {spot for FileExplorer component } */}
                 </div>
               ) : userIsCreated ? (

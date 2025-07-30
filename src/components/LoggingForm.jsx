@@ -11,12 +11,42 @@ function LoggingForm(props) {
     setUser((prevValue) => ({ ...prevValue, [name]: value }));
   }
 
-  function handleLogin(event) {
+  async function handleLogin(event) {
     event.preventDefault();
-    if (user.userName.trim() !== "") {
-      props.onLogin(user.userName); // Używamy userName jako userId
-    } else {
-      alert("Please enter your username.");
+
+    const { userName, userPassword } = user;
+
+    if (userName.trim() === "" || userPassword.trim() === "") {
+      alert("Please enter your username and password.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/file-researcher/users/me", {
+        method: "GET",
+        headers: {
+          Authorization: "Basic " + btoa(userName + ":" + userPassword),
+        },
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        console.log("Logged in user:", userData);
+
+        // przekazujemy userData i credentialsy dalej, np. do App.js
+        props.onLogin({
+          ...userData,
+          credentials: {
+            username: userName,
+            password: userPassword,
+          },
+        });
+      } else {
+        const message = await response.text();
+        alert("Login failed: " + message);
+      }
+    } catch (error) {
+      alert("Something went wrong: " + error.message);
     }
   }
 
