@@ -22,18 +22,21 @@ function LoggingForm(props) {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/file-researcher/users/me", {
-        method: "GET",
-        headers: {
-          Authorization: "Basic " + btoa(userName + ":" + userPassword),
-        },
-      });
+      const response = await fetch(
+        "http://localhost:8080/file-researcher/users/me",
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Basic " + btoa(userName + ":" + userPassword),
+          },
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         const userData = await response.json();
         console.log("Logged in user:", userData);
 
-        // przekazujemy userData i credentialsy dalej, np. do App.js
         props.onLogin({
           ...userData,
           credentials: {
@@ -71,8 +74,12 @@ function LoggingForm(props) {
         value={user.userPassword}
         className="form-input"
       />
-      <button type="submit" className="form-button">Log in</button>
-      <p onClick={handleCreate} className="form-link">I am not a user yet!</p>
+      <button type="submit" className="form-button">
+        Log in
+      </button>
+      <p onClick={handleCreate} className="form-link">
+        I am not a user yet!
+      </p>
     </form>
   );
 }

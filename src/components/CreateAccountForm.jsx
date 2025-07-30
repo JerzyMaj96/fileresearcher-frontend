@@ -22,15 +22,21 @@ function CreateAccountForm(props) {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/file-researcher/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newUser),
-      });
+      const response = await fetch(
+        "http://localhost:8080/file-researcher/users",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newUser),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
-        alert("Your user account has been successfully created! Your ID is: " + data.id);
+        alert(
+          "Your user account has been successfully created! Your ID is: " +
+            data.id
+        );
         props.onBackToLogin();
       } else {
         const errorMessage = await response.text();
@@ -65,7 +71,9 @@ function CreateAccountForm(props) {
         value={user.userPassword}
         className="form-input"
       />
-      <button type="submit" className="form-button">Create User</button>
+      <button type="submit" className="form-button">
+        Create User
+      </button>
       <p onClick={props.onBackToLogin} className="form-link">
         Back to Login
       </p>
