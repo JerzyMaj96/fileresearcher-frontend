@@ -1,0 +1,56 @@
+/* Header.css */
+header {
+  background-color: #8c13f5;
+  margin: auto -16px;
+  padding: 16px 32px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+header h1 {
+  font-weight: bold;
+}
+
+.header-user {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.avatar-icon {
+  font-size: 32px;
+}
+
+.user-name {
+  font-weight: bold;
+  color: white;
+  margin-top: 4px;
+}
+
+.logout-icon {
+  cursor: pointer;
+  color: white;
+  font-size: 28px;
+  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.logout-icon:hover {
+  opacity: 0.8;
+  transform: scale(1.1);
+}

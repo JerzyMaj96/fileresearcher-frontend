@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import "./LoggingForm.css";
 
-function LoggingForm(props) {
+function LoggingForm({ onLogin, onCreate }) {
   const [user, setUser] = useState({
     userName: "",
     userPassword: "",
@@ -37,7 +38,7 @@ function LoggingForm(props) {
         const userData = await response.json();
         console.log("Logged in user:", userData);
 
-        props.onLogin({
+        onLogin({
           ...userData,
           credentials: {
             username: userName,
@@ -54,7 +55,7 @@ function LoggingForm(props) {
   }
 
   function handleCreate() {
-    props.onCreate();
+    onCreate();
   }
 
   return (

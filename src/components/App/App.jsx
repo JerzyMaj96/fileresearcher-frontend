@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoggingForm from "./LoggingForm";
-import CreateAccountForm from "./CreateAccountForm";
-import Header from "./Header";
+import LoggingForm from "../LoggingForm/LoggingForm";
+import CreateAccountForm from "../CreateAccountForm/CreateAccountForm";
+import Header from "../Header/Header";
+import FileExplorer from "../FileExplorer/FileExplorer";
+import "./App.css";
 
 function App() {
   const [userIsCreated, setUserIsCreated] = useState(true);
@@ -23,7 +25,7 @@ function App() {
 
   return (
     <Router>
-      <Header />
+      <Header loggedInUser={loggedInUser} onLogout={handleLogout} />
       <div className="container">
         <Routes>
           <Route
@@ -31,20 +33,23 @@ function App() {
             element={
               loggedInUser ? (
                 <div>
-                  <h2>Welcome, {loggedInUser.name}!</h2>
-                  <p>Your user ID is: {loggedInUser.id}</p>
-                  <button onClick={handleLogout} className="form-button">
-                    Log out
-                  </button>
-                  {/* {spot for FileExplorer component } */}
+                  <FileExplorer
+                    loggedInUser={loggedInUser}
+                    onLogout={handleLogout}
+                  />
                 </div>
               ) : userIsCreated ? (
                 <div>
                   <h1>Hello!</h1>
-                  <LoggingForm onLogin={handleLogin} onCreate={handleCreateAccountClick} />
+                  <LoggingForm
+                    onLogin={handleLogin}
+                    onCreate={handleCreateAccountClick}
+                  />
                 </div>
               ) : (
-                <CreateAccountForm onBackToLogin={() => setUserIsCreated(true)} />
+                <CreateAccountForm
+                  onBackToLogin={() => setUserIsCreated(true)}
+                />
               )
             }
           />

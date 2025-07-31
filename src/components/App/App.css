@@ -1,3 +1,4 @@
+/* App.css */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -12,25 +13,6 @@ body {
   background: #566286;
   width: 100%;
   height: 100%;
-}
-
-header {
-  background-color: #8c13f5;
-  margin: auto -16px;
-  padding: 16px 32px;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-header h1 {
-  font-weight: bold;
 }
 
 .container {
@@ -76,42 +58,4 @@ button {
 
 button:active {
   transform: scale(0.96);
-}
-
-/* ------- Forms ------- */
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  max-width: 300px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.form-input {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.form-button {
-  background-color: #8c13f5;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.form-button:hover {
-  background-color: #37873b;
-}
-
-.form-link {
-  text-align: center;
-  color: wheat;
-  cursor: pointer;
-  text-decoration: underline;
 }

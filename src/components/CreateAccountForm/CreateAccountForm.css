@@ -1,0 +1,36 @@
+/* CreateAccountForm.css */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.form-input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.form-button {
+  background-color: #8c13f5;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.form-button:hover {
+  background-color: #37873b;
+}
+
+.form-link {
+  text-align: center;
+  color: wheat;
+  cursor: pointer;
+  text-decoration: underline;
+}
