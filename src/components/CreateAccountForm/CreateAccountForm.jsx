@@ -38,6 +38,11 @@ function CreateAccountForm(props) {
           "Your user account has been successfully created! Your ID is: " +
             data.id
         );
+        setUser({
+          userName: "",
+          userEmail: "",
+          userPassword: "",
+        });
         props.onBackToLogin();
       } else {
         const errorMessage = await response.text();

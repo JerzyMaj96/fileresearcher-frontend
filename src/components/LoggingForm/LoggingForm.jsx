@@ -45,9 +45,15 @@ function LoggingForm({ onLogin, onCreate }) {
             password: userPassword,
           },
         });
+
+        setUser({
+          userName: "",
+          userPassword: "",
+        });
       } else {
         const message = await response.text();
         alert("Login failed: " + message);
+        setUser((prev) => ({ ...prev, userPassword: "" }));
       }
     } catch (error) {
       alert("Something went wrong: " + error.message);
