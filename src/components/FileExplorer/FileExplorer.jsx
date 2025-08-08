@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./FileExplorer.css";
+import FileNode from "./FileNode";
 
 function FileExplorer({ loggedInUser }) {
   const [path, setPath] = useState("");
   const [files, setFiles] = useState(null);
-  const [loading, setLoading] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   function handlePathChange(event) {
     setPath(event.target.value);
@@ -12,10 +13,7 @@ function FileExplorer({ loggedInUser }) {
 
   async function handleScan(event) {
     event.preventDefault();
-
     setLoading(true);
-
-    const givenPath = { path };
 
     try {
       const response = await fetch(
@@ -23,28 +21,23 @@ function FileExplorer({ loggedInUser }) {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(givenPath),
+          body: JSON.stringify({ path }),
         }
       );
+
       if (response.ok) {
         const data = await response.json();
-
         if (data && data.children) {
           setFiles(data.children);
-          alert("Path successfully scanned. ");
         } else {
-          alert("Path scanned but no files found");
           setFiles([]);
         }
-
-        setLoading(false);
       } else {
-        const errorMessage = await response.text();
-        alert("Error: " + (errorMessage || "Unknown error"));
-        setLoading(false);
+        alert("Error: " + (await response.text()));
       }
     } catch (error) {
       alert("Something went wrong: " + error.message);
+    } finally {
       setLoading(false);
     }
   }
@@ -70,29 +63,14 @@ function FileExplorer({ loggedInUser }) {
       {loading && <div className="loader" />}
 
       {files && !loading && files.length > 0 && (
-        <table className="file-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Size (bytes)</th>
-              <th>Path</th>
-            </tr>
-          </thead>
-          <tbody>
-            {files.map((file, index) => (
-              <tr key={index}>
-                <td>{file.name}</td>
-                <td>{file.directory ? "Directory" : "File"}</td>
-                <td>{file.directory ? "-" : file.size}</td>
-                <td>{file.path}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="file-tree">
+          {files.map((file, index) => (
+            <FileNode key={index} node={file} />
+          ))}
+        </div>
       )}
 
-      {files && files.length === 0 && (
+      {files && files.length === 0 && !loading && (
         <p className="no-files-message">No files found in the selected path.</p>
       )}
     </div>
