@@ -7,34 +7,32 @@ import {
   FaFileAlt,
   FaFileImage,
 } from "react-icons/fa";
-import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
 
-function FileNode({ node }) {
+function FileNode({ node, toggleSelect, selectedPaths }) {
   const [expanded, setExpanded] = useState(false);
   const isDirectory = node.directory;
 
   const toggleExpand = () => {
-    if (isDirectory) setExpanded(!expanded);
+    setExpanded(!expanded);
   };
 
   function getIcon(filename, isDirectory, expanded) {
     if (isDirectory) {
       return expanded ? (
-        <FaFolderOpen color="#f4b400" />
+        <FaFolderOpen color="orange" />
       ) : (
-        <FaFolder color="#f4b400" />
+        <FaFolder color="orange" />
       );
     }
     const ext = filename.split(".").pop().toLowerCase();
-    if (ext === "pdf") return <FaFilePdf color="#d32f2f" />;
-    if (["doc", "docx"].includes(ext)) return <FaFileWord color="#1976d2" />;
+    if (ext === "pdf") return <FaFilePdf color="red" />;
+    if (["doc", "docx"].includes(ext)) return <FaFileWord color="blue" />;
     if (["jpg", "jpeg", "png"].includes(ext))
-      return <FaFileImage color="#388e3c" />;
-    return <FaFileAlt color="#616161" />;
+      return <FaFileImage color="green" />;
+    return <FaFileAlt color="gray" />;
   }
 
   function formatSize(bytes) {
-    if (bytes == null) return "";
     if (bytes === 0) return "0 B";
     const sizes = ["B", "KB", "MB", "GB", "TB"];
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
@@ -44,21 +42,24 @@ function FileNode({ node }) {
 
   return (
     <div className="file-node">
-      <div
-        className={`file-node-header ${expanded ? "expanded" : ""}`}
-        onClick={toggleExpand}
-      >
-        {isDirectory ? (
-          expanded ? (
-            <IoIosArrowDown />
-          ) : (
-            <IoIosArrowForward />
-          )
-        ) : (
-          <span style={{ width: "1em" }} />
-        )}
-        {getIcon(node.name, isDirectory, expanded)}
-        <span className="file-name">{node.name}</span>
+      <div className="file-node-header">
+        <input
+          type="checkbox"
+          checked={selectedPaths.includes(node.path)}
+          onChange={() => toggleSelect(node)}
+        />
+        <span
+          onClick={toggleExpand}
+          style={{ cursor: isDirectory ? "pointer" : "default" }}
+        >
+          {getIcon(node.name, isDirectory, expanded)}
+        </span>
+        <span
+          className="file-name"
+          onClick={isDirectory ? toggleExpand : undefined}
+        >
+          {node.name}
+        </span>
         <span className="file-meta">
           {isDirectory ? "Directory" : "File"}{" "}
           {!isDirectory && node.size != null
@@ -71,7 +72,12 @@ function FileNode({ node }) {
         <div className="file-children">
           {node.children && node.children.length > 0 ? (
             node.children.map((child, index) => (
-              <FileNode key={index} node={child} />
+              <FileNode
+                key={index}
+                node={child}
+                toggleSelect={toggleSelect}
+                selectedPaths={selectedPaths}
+              />
             ))
           ) : (
             <div className="empty-folder">📂 Empty folder</div>

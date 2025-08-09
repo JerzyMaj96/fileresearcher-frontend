@@ -6,6 +6,7 @@ function FileExplorer({ loggedInUser }) {
   const [path, setPath] = useState("");
   const [files, setFiles] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [selectedPaths, setSelectedPaths] = useState([]);
 
   function handlePathChange(event) {
     setPath(event.target.value);
@@ -42,6 +43,56 @@ function FileExplorer({ loggedInUser }) {
     }
   }
 
+  function getAllChildPaths(node) {
+    let paths = [];
+    if (node.directory && node.children && node.children.length > 0) {
+      node.children.forEach((child) => {
+        paths.push(child.path);
+        if (child.directory) {
+          paths = paths.concat(getAllChildPaths(child));
+        }
+      });
+    }
+    return paths;
+  }
+
+  function toggleSelect(node) {
+    const isSelected = selectedPaths.includes(node.path);
+
+    if (isSelected) {
+      const childPaths = getAllChildPaths(node);
+      setSelectedPaths((prev) =>
+        prev.filter((p) => p !== node.path && !childPaths.includes(p))
+      );
+    } else {
+      const childPaths = getAllChildPaths(node);
+      setSelectedPaths((prev) => [...prev, node.path, ...childPaths]);
+    }
+  }
+
+  async function handleCreateFileSet() {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/file-researcher/file-sets",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            path,
+            selected: selectedPaths,
+          }),
+        }
+      );
+      if (response.ok) {
+        alert("File set created successfully!");
+      } else {
+        alert("Error creating file set");
+      }
+    } catch (error) {
+      alert("Something went wrong: " + error.message);
+    }
+  }
+
   return (
     <div className="file-explorer">
       <h2>Welcome, {loggedInUser.name}!</h2>
@@ -63,11 +114,27 @@ function FileExplorer({ loggedInUser }) {
       {loading && <div className="loader" />}
 
       {files && !loading && files.length > 0 && (
-        <div className="file-tree">
-          {files.map((file, index) => (
-            <FileNode key={index} node={file} />
-          ))}
-        </div>
+        <>
+          {selectedPaths.length > 0 && (
+            <button
+              onClick={handleCreateFileSet}
+              className="create-fileset-button"
+            >
+              Create File Set ({selectedPaths.length})
+            </button>
+          )}
+
+          <div className="file-tree">
+            {files.map((file, index) => (
+              <FileNode
+                key={index}
+                node={file}
+                toggleSelect={toggleSelect}
+                selectedPaths={selectedPaths}
+              />
+            ))}
+          </div>
+        </>
       )}
 
       {files && files.length === 0 && !loading && (
