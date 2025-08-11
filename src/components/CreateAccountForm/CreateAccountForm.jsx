@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./CreateAccountForm.css";
 
-function CreateAccountForm(props) {
+function CreateAccountForm({ onBackToLogin }) {
   const [user, setUser] = useState({
     userName: "",
     userEmail: "",
@@ -43,7 +43,7 @@ function CreateAccountForm(props) {
           userEmail: "",
           userPassword: "",
         });
-        props.onBackToLogin();
+        onBackToLogin();
       } else {
         const errorMessage = await response.text();
         alert("Error: " + errorMessage);
@@ -80,7 +80,7 @@ function CreateAccountForm(props) {
       <button type="submit" className="form-button">
         Create User
       </button>
-      <p onClick={props.onBackToLogin} className="form-link">
+      <p onClick={onBackToLogin} className="form-link">
         Back to Login
       </p>
     </form>
