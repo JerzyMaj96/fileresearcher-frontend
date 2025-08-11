@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import "./CreateAccountForm.css";
+import { Link, useNavigate } from "react-router-dom";
 
-function CreateAccountForm({ onBackToLogin }) {
+function CreateAccountForm() {
   const [user, setUser] = useState({
     userName: "",
     userEmail: "",
     userPassword: "",
   });
+  const navigate = useNavigate();
 
   function handleChange(event) {
     const { value, name } = event.target;
@@ -43,7 +45,7 @@ function CreateAccountForm({ onBackToLogin }) {
           userEmail: "",
           userPassword: "",
         });
-        onBackToLogin();
+        navigate("/login");
       } else {
         const errorMessage = await response.text();
         alert("Error: " + errorMessage);
@@ -80,8 +82,8 @@ function CreateAccountForm({ onBackToLogin }) {
       <button type="submit" className="form-button">
         Create User
       </button>
-      <p onClick={onBackToLogin} className="form-link">
-        Back to Login
+      <p className="form-link">
+        <Link to="/login">Back to Login</Link>
       </p>
     </form>
   );

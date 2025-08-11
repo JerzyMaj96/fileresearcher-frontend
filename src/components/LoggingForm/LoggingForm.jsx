@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import "./LoggingForm.css";
+import { Link, useNavigate } from "react-router-dom";
 
-function LoggingForm({ onLogin, onCreate }) {
+function LoggingForm({ onLogin }) {
   const [user, setUser] = useState({
     userName: "",
     userPassword: "",
   });
+  const navigate = useNavigate();
 
   function handleChange(event) {
     const { value, name } = event.target;
@@ -50,6 +52,7 @@ function LoggingForm({ onLogin, onCreate }) {
           userName: "",
           userPassword: "",
         });
+        navigate("/explorer");
       } else {
         const message = await response.text();
         alert("Login failed: " + message);
@@ -58,10 +61,6 @@ function LoggingForm({ onLogin, onCreate }) {
     } catch (error) {
       alert("Something went wrong: " + error.message);
     }
-  }
-
-  function handleCreate() {
-    onCreate();
   }
 
   return (
@@ -84,8 +83,8 @@ function LoggingForm({ onLogin, onCreate }) {
       <button type="submit" className="form-button">
         Log in
       </button>
-      <p onClick={handleCreate} className="form-link">
-        I am not a user yet!
+      <p className="form-link">
+        <Link to="/register">I am not a user yet!</Link>
       </p>
     </form>
   );

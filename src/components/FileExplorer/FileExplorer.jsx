@@ -28,11 +28,7 @@ function FileExplorer({ loggedInUser }) {
 
       if (response.ok) {
         const data = await response.json();
-        if (data && data.children) {
-          setFiles(data.children);
-        } else {
-          setFiles([]);
-        }
+        setFiles(data?.children || []);
       } else {
         alert("Error: " + (await response.text()));
       }
@@ -45,7 +41,7 @@ function FileExplorer({ loggedInUser }) {
 
   function getAllChildPaths(node) {
     let paths = [];
-    if (node.directory && node.children && node.children.length > 0) {
+    if (node.directory && node.children?.length) {
       node.children.forEach((child) => {
         paths.push(child.path);
         if (child.directory) {
@@ -58,14 +54,13 @@ function FileExplorer({ loggedInUser }) {
 
   function toggleSelect(node) {
     const isSelected = selectedPaths.includes(node.path);
+    const childPaths = getAllChildPaths(node);
 
     if (isSelected) {
-      const childPaths = getAllChildPaths(node);
       setSelectedPaths((prev) =>
         prev.filter((p) => p !== node.path && !childPaths.includes(p))
       );
     } else {
-      const childPaths = getAllChildPaths(node);
       setSelectedPaths((prev) => [...prev, node.path, ...childPaths]);
     }
   }
