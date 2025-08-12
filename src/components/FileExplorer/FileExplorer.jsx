@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./FileExplorer.css";
 import FileNode from "./FileNode";
+import PathInput from "./PathInput";
 
 function FileExplorer({ loggedInUser }) {
   const [path, setPath] = useState("");
@@ -12,8 +13,8 @@ function FileExplorer({ loggedInUser }) {
     setPath(event.target.value);
   }
 
-  async function handleScan(event) {
-    event.preventDefault();
+  async function handleScan() {
+    if (loading) return;
     setLoading(true);
 
     try {
@@ -93,18 +94,11 @@ function FileExplorer({ loggedInUser }) {
       <h2>Welcome, {loggedInUser.name}!</h2>
       <p>Your user ID is: {loggedInUser.id}</p>
 
-      <div className="path-input-group">
-        <input
-          type="text"
-          value={path}
-          onChange={handlePathChange}
-          placeholder="Enter path (e.g., C:/Users/...)"
-          className="path-input"
-        />
-        <button onClick={handleScan} className="scan-button">
-          Scan
-        </button>
-      </div>
+      <PathInput
+        path={path}
+        onPathChange={handlePathChange}
+        onScan={handleScan}
+      />
 
       {loading && <div className="loader" />}
 
