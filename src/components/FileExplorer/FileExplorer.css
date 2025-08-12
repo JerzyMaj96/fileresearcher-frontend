@@ -156,3 +156,11 @@ p {
   padding-left: 28px;
   margin-top: 4px;
 }
+
+.fileset-form input {
+  display: block;
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  width: 250px;
+  font-size: 14px;
+}

@@ -8,6 +8,10 @@ function FileExplorer({ loggedInUser }) {
   const [files, setFiles] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedPaths, setSelectedPaths] = useState([]);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [recipientEmail, setRecipientEmail] = useState("");
+  const [fileSetIsCreated, setFileSetIsCreated] = useState(false);
 
   function handlePathChange(event) {
     setPath(event.target.value);
@@ -67,22 +71,45 @@ function FileExplorer({ loggedInUser }) {
   }
 
   async function handleCreateFileSet() {
+    if (!name.trim() || !recipientEmail.trim() || selectedPaths.length === 0) {
+      alert(
+        "Name, recipient email and at least one selected path are required."
+      );
+      return;
+    }
+
     try {
       const response = await fetch(
         "http://localhost:8080/file-researcher/file-sets",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Basic " +
+              btoa(
+                loggedInUser.credentials.username +
+                  ":" +
+                  loggedInUser.credentials.password
+              ),
+          },
           body: JSON.stringify({
-            path,
-            selected: selectedPaths,
+            name,
+            description,
+            recipientEmail,
+            selectedPaths,
           }),
+          credentials: "include",
         }
       );
       if (response.ok) {
         alert("File set created successfully!");
+        setFileSetIsCreated(true);
       } else {
-        alert("Error creating file set");
+        const errorText = await response.text();
+        alert(
+          `Error creating file set (status ${response.status}) : ${errorText}`
+        );
       }
     } catch (error) {
       alert("Something went wrong: " + error.message);
@@ -104,13 +131,36 @@ function FileExplorer({ loggedInUser }) {
 
       {files && !loading && files.length > 0 && (
         <>
-          {selectedPaths.length > 0 && (
-            <button
-              onClick={handleCreateFileSet}
-              className="create-fileset-button"
-            >
-              Create File Set ({selectedPaths.length})
-            </button>
+          {selectedPaths.length > 0 && !fileSetIsCreated && (
+            <>
+              <div className="fileset-form">
+                <input
+                  type="text"
+                  placeholder="File Set Name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Description"
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
+                />
+                <input
+                  type="email"
+                  placeholder="Recipient Email"
+                  value={recipientEmail}
+                  onChange={(event) => setRecipientEmail(event.target.value)}
+                />
+              </div>
+
+              <button
+                onClick={handleCreateFileSet}
+                className="create-fileset-button"
+              >
+                Create File Set ({selectedPaths.length})
+              </button>
+            </>
           )}
 
           <div className="file-tree">
