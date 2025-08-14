@@ -64,7 +64,7 @@ function LoggingForm({ onLogin }) {
   }
 
   return (
-    <form onSubmit={handleLogin} className="form">
+    <form onSubmit={handleLogin} className="form-container">
       <input
         onChange={handleChange}
         name="userName"

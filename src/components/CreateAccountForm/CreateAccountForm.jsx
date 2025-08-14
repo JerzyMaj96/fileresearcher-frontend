@@ -56,7 +56,7 @@ function CreateAccountForm() {
   }
 
   return (
-    <form onSubmit={handleUser} className="form">
+    <form onSubmit={handleUser} className="form-container">
       <input
         onChange={handleChange}
         name="userName"

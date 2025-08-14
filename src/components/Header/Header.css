@@ -1,7 +1,6 @@
 /* Header.css */
 header {
   background-color: #8c13f5;
-  margin: auto -16px;
   padding: 16px 32px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
   display: flex;
@@ -12,6 +11,7 @@ header {
   left: 0;
   right: 0;
   z-index: 1000;
+  margin: 0;
 }
 
 header h1 {
