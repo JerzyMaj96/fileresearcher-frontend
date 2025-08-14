@@ -1,11 +1,16 @@
 .sidebar {
+  position: fixed;
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
   width: 220px;
-  background-color: #2c3e50;
+  height: 100vh;
+  background-color: rgba(44, 62, 80, 0.85);
   color: white;
   padding: 1rem 1rem 1rem 1rem;
   box-sizing: border-box;
   overflow-y: auto;
-  padding-top: 5rem; 
+  padding-top: 5rem;
 }
 
 .sidebar ul {
@@ -21,8 +26,14 @@
   color: white;
   text-decoration: none;
   font-weight: bold;
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
 }
 
+.sidebar a:hover,
 .sidebar a.active {
-  text-decoration: underline;
+  background-color: rgba(255, 255, 255, 0.15);
 }

@@ -125,8 +125,10 @@
 }
 
 .file-node-header input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
   margin: 0;
-  transform: scale(1.1);
+  flex-shrink: 0;
 }
 
 .file-node-header.expanded {

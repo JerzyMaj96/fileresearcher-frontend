@@ -37,6 +37,7 @@ html {
 
 .main-content {
   flex-grow: 1;
+  margin-left: 220px;
   padding: 2rem;
   background-color: #566286;
   color: white;
@@ -44,7 +45,6 @@ html {
   overflow-y: auto;
 }
 
-/* Formularze logowania i rejestracji */
 .form-container {
   margin: 10% auto;
   max-width: 320px;
@@ -58,7 +58,6 @@ html {
   margin-bottom: 1rem;
 }
 
-/* Inputy w formularzach */
 input {
   border: 1px solid rgba(252, 252, 252, 0.4);
   background-color: rgba(252, 252, 252, 0.2);
@@ -74,7 +73,6 @@ input {
   font-weight: 300;
 }
 
-/* Przycisk */
 button {
   appearance: none;
   outline: 0;

@@ -13,3 +13,45 @@
     transform: rotate(360deg);
   }
 }
+
+.filesets-container {
+  padding: 2rem;
+  background-color: #566286;
+  color: white;
+}
+
+.filesets-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.filesets-table th,
+.filesets-table td {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.filesets-table th {
+  background-color: rgba(255, 255, 255, 0.1);
+  font-weight: 500;
+}
+
+.filesets-table tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.filesets-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.action-cell {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.action-cell svg {
+  cursor: pointer;
+  color: red;
+}
