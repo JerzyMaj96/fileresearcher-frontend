@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./FileSetsPage.css";
+import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 function FileSetsPage({ loggedInUser }) {
@@ -75,6 +76,44 @@ function FileSetsPage({ loggedInUser }) {
     }
   }
 
+  async function handleSendFileZip(fileSetId, recipientEmail) {
+    if (
+      !window.confirm(
+        `Would you like to send this file set to ${recipientEmail}?`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/zip/send?recipientEmail=${recipientEmail}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Basic " +
+              btoa(
+                loggedInUser.credentials.username +
+                  ":" +
+                  loggedInUser.credentials.password
+              ),
+          },
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        alert("Files have been send successfully");
+      } else {
+        alert("Failed to send the files.");
+      }
+    } catch (error) {
+      alert("Something went wrong: " + error.message);
+    }
+  }
+
   if (loading) return <div className="loader" />;
   if (error) return <p>Error loading file sets: {error}</p>;
 
@@ -92,6 +131,8 @@ function FileSetsPage({ loggedInUser }) {
               <th>Description</th>
               <th>Recipient E-mail</th>
               <th>Creation Date</th>
+              <th>Delete</th>
+              <th>Send</th>
             </tr>
           </thead>
           <tbody>
@@ -110,8 +151,15 @@ function FileSetsPage({ loggedInUser }) {
                     minute: "2-digit",
                   })}
                 </td>
-                <td className="action-cell">
+                <td className="action-cell-delete">
                   <DeleteIcon onClick={() => handleDeleteFileSet(set.id)} />
+                </td>
+                <td className="action-cell-send">
+                  <SendIcon
+                    onClick={() =>
+                      handleSendFileZip(set.id, set.recipientEmail)
+                    }
+                  />
                 </td>
               </tr>
             ))}
