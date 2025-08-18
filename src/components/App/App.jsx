@@ -12,6 +12,7 @@ import FileExplorer from "../FileExplorer/FileExplorer";
 import Sidebar from "../Sidebar/Sidebar";
 import FileSetsPage from "../FileSetsPage/FileSetsPage";
 import "./App.css";
+import History from "../History/History";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -66,6 +67,16 @@ function App() {
               element={
                 loggedInUser ? (
                   <FileSetsPage loggedInUser={loggedInUser} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route
+              path="/history"
+              element={
+                loggedInUser ? (
+                  <History loggedInUser={loggedInUser} />
                 ) : (
                   <Navigate to="/login" />
                 )

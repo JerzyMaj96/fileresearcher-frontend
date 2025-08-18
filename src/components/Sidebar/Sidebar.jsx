@@ -23,6 +23,14 @@ function Sidebar() {
             My FileSets
           </NavLink>
         </li>
+        <li>
+          <NavLink
+            to="/history"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            History
+          </NavLink>
+        </li>
       </ul>
     </nav>
   );
