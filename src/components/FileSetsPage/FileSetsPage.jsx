@@ -87,7 +87,7 @@ function FileSetsPage({ loggedInUser }) {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/zip/send?recipientEmail=${recipientEmail}`,
+        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/zip-archives/send?recipientEmail=${recipientEmail}`,
         {
           method: "POST",
           headers: {

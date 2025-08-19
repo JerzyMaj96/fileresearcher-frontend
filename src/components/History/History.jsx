@@ -69,7 +69,7 @@ function History({ loggedInUser }) {
               <th>Send ID</th>
               <th>Attempt Date</th>
               <th>STATUS</th>
-              <th>Receiver email</th>
+              <th>Recipient email</th>
             </tr>
           </thead>
           <tbody>

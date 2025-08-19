@@ -25,6 +25,14 @@ function Sidebar() {
         </li>
         <li>
           <NavLink
+            to="/zip-archives"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            Zip Archives
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
             to="/history"
             className={({ isActive }) => (isActive ? "active" : "")}
           >

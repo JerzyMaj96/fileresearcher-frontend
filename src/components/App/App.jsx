@@ -13,6 +13,7 @@ import Sidebar from "../Sidebar/Sidebar";
 import FileSetsPage from "../FileSetsPage/FileSetsPage";
 import "./App.css";
 import History from "../History/History";
+import ZipArchivesPage from "../ZipArchivesPage/ZipArchivesPage";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -67,6 +68,16 @@ function App() {
               element={
                 loggedInUser ? (
                   <FileSetsPage loggedInUser={loggedInUser} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route
+              path="/zip-archives"
+              element={
+                loggedInUser ? (
+                  <ZipArchivesPage loggedInUser={loggedInUser} />
                 ) : (
                   <Navigate to="/login" />
                 )
