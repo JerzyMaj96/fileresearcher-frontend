@@ -1,4 +1,4 @@
-.file-explorer {
+.history-explorer {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
@@ -7,16 +7,13 @@
   border-radius: 8px;
 }
 
-.file-explorer h2 {
+.history-explorer h2 {
   font-weight: bold;
   margin-bottom: 10px;
+  font-size: 22px;
 }
 
-.file-explorer p {
-  font-size: 16px;
-  color: white;
-}
-
+/* --- INPUT + BUTTON --- */
 .path-input-group {
   display: flex;
   gap: 10px;
@@ -27,11 +24,16 @@
   flex: 1;
   padding: 10px;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid #555;
+  background: #2a2a2a;
+  color: #f5f5f5;
 }
 
-.scan-button,
-.create-fileset-button {
+.path-input::placeholder {
+  color: #888;
+}
+
+.scan-button {
   padding: 10px 16px;
   background-color: #8c13f5;
   color: white;
@@ -42,52 +44,79 @@
   transition: background-color 0.2s ease;
 }
 
-.scan-button:hover,
-.create-fileset-button:hover {
+.scan-button:hover {
   background-color: #6b0fc5;
 }
 
-.create-fileset-button {
-  margin-top: 20px;
-  width: 100%;
-}
-
-.file-table {
+/* --- TABLE --- */
+table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
-  background: white;
-  color: black;
+  background: #2a2a2a;
+  color: #f5f5f5;
   border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
-.file-table th,
-.file-table td {
-  padding: 12px;
-  border: 1px solid #ccc;
+table th,
+table td {
+  padding: 12px 16px;
   text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.file-table th {
-  background-color: #f0f0f0;
+table th {
+  background: #3a3a3a;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+table tr:nth-child(even) {
+  background: #242424;
+}
+
+table tr:hover {
+  background: rgba(140, 19, 245, 0.15);
+  transition: background-color 0.2s ease;
+}
+
+/* --- STATUS--- */
+.status-success {
+  color: #4caf50;
   font-weight: bold;
 }
 
-.no-files-message {
-  color: #777;
-  font-style: italic;
+.status-failed {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: #f1c40f;
+  font-weight: bold;
+}
+
+/* --- NO HISTORY MESSAGE --- */
+.file-explorer p {
   margin-top: 20px;
+  font-size: 15px;
+  color: #bbb;
+  font-style: italic;
   text-align: center;
 }
 
+/* --- LOADER --- */
 .loader {
   border: 4px solid rgba(255, 255, 255, 0.2);
   border-top: 4px solid #f5ba13;
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  margin: 20px auto;
+  margin: 30px auto;
   animation: spin 1s linear infinite;
 }
 
@@ -95,73 +124,4 @@
   to {
     transform: rotate(360deg);
   }
-}
-
-.file-tree {
-  font-family: monospace;
-  margin-top: 20px;
-  padding-left: 0;
-}
-
-.file-tree span {
-  user-select: none;
-}
-
-.file-node {
-  margin-left: 0;
-}
-
-.file-node-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
-  border-radius: 4px 0;
-  transition: background-color 0.2s ease;
-}
-
-.file-node-header:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.file-node-header input[type="checkbox"] {
-  width: 14px;
-  height: 14px;
-  margin: 0;
-  flex-shrink: 0;
-}
-
-.file-node-header.expanded {
-  background-color: rgba(0, 0, 0, 0.08);
-}
-
-.file-name {
-  font-weight: bold;
-}
-
-.file-meta {
-  margin-left: auto;
-  font-size: 12px;
-  color: gray;
-}
-
-.file-children {
-  margin-left: 16px;
-  border-left: 1px dashed #555;
-  padding-left: 10px;
-}
-
-.empty-folder {
-  font-style: italic;
-  color: #999;
-  padding-left: 28px;
-  margin-top: 4px;
-}
-
-.fileset-form input {
-  display: block;
-  margin-bottom: 8px;
-  padding: 6px 8px;
-  width: 250px;
-  font-size: 14px;
 }

@@ -4,8 +4,8 @@ import HistoryInput from "./HistoryInput";
 
 function History({ loggedInUser }) {
   const [zipArchiveId, setZipArchiveId] = useState("");
-  const [sentHistory, setSentHistory] = useState(null);
-  const [loading, setLoading] = useState(null);
+  const [sentHistory, setSentHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   function handleChange(event) {
     setZipArchiveId(event.target.value);
@@ -52,16 +52,52 @@ function History({ loggedInUser }) {
   }
 
   return (
-    <div className="file-explorer">
+    <div className="history-explorer">
       <h2>History Researcher</h2>
       <HistoryInput
+        zipArchiveId={zipArchiveId}
         onLoad={loadSentHistory}
         onZipArchiveIdChange={handleChange}
       />
 
       {loading && <div className="loader" />}
 
-      {zipArchiveId && !loading && sentHistory.length > 0 && <div></div>}
+      {sentHistory && !loading && sentHistory.length > 0 && (
+        <table>
+          <thead>
+            <tr>
+              <th>Send ID</th>
+              <th>Attempt Date</th>
+              <th>STATUS</th>
+              <th>Receiver email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sentHistory.map((history) => (
+              <tr key={history.id}>
+                <td>{history.id}</td>
+                <td>
+                  {new Date(history.sentAttemptDate).toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </td>
+                <td className={`status-${history.status.toLowerCase()}`}>
+                  {history.status}
+                </td>
+                <td>{history.sentToEmail}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {!loading && sentHistory.length === 0 && zipArchiveId && (
+        <p>No history found for archive ID: {zipArchiveId}</p>
+      )}
     </div>
   );
 }
