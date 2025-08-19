@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./ZipArchivesPage.css";
 import ZipArchivesInput from "./ZipArchivesInput";
+import { FaFileArchive } from "react-icons/fa";
 
 function ZipArchivesPage({ loggedInUser }) {
   const [fileSetId, setFileSetId] = useState("");
@@ -51,13 +52,13 @@ function ZipArchivesPage({ loggedInUser }) {
     }
   }
 
-  async function loadZipArchivesForFileSet() {
+  async function loadZipArchivesForFileSet(fileSetId) {
     if (loading) return;
     setLoading(true);
 
     try {
       const response = await fetch(
-        `http://localhost:8080/file-researcher//file-sets/${fileSetId}/zip-archives`,
+        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/zip-archives`,
         {
           method: "GET",
           headers: {
@@ -93,7 +94,7 @@ function ZipArchivesPage({ loggedInUser }) {
       <h2>Zip Archive Researcher</h2>
       <ZipArchivesInput
         zipArchiveId={fileSetId}
-        onLoad={loadZipArchivesForFileSet}
+        onLoad={() => loadZipArchivesForFileSet(fileSetId)}
         onFileSetIdChange={handleChange}
       />
 
@@ -115,7 +116,10 @@ function ZipArchivesPage({ loggedInUser }) {
             <tbody>
               {zipArchives.map((zipArchive) => (
                 <tr key={zipArchive.id}>
-                  <td>{zipArchive.id}</td>
+                  <td>
+                    <FaFileArchive style={{ marginRight: "5px" }} />
+                    {zipArchive.id}
+                  </td>
                   <td>{zipArchive.archiveName}</td>
                   <td>{zipArchive.size}</td>
                   <td>
@@ -136,10 +140,6 @@ function ZipArchivesPage({ loggedInUser }) {
             </tbody>
           </table>
         </div>
-      )}
-
-      {!loading && zipArchives.length === 0 && fileSetId && (
-        <p>No history found for archive ID: {fileSetId}</p>
       )}
     </div>
   );

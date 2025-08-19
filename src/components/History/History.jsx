@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./History.css";
 import HistoryInput from "./HistoryInput";
 
@@ -7,11 +7,51 @@ function History({ loggedInUser }) {
   const [sentHistory, setSentHistory] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    loadSentHistoryForUser();
+  }, [loggedInUser]);
+
   function handleChange(event) {
     setZipArchiveId(event.target.value);
   }
 
-  async function loadSentHistory() {
+  async function loadSentHistoryForUser() {
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/file-researcher/zip-archives/history`,
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "Application/json",
+            Authorization:
+              "Basic " +
+              btoa(
+                loggedInUser.credentials.username +
+                  ":" +
+                  loggedInUser.credentials.password
+              ),
+          },
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setSentHistory(data);
+        setLoading(false);
+      } else {
+        alert("Failed to fetch sent history");
+        setLoading(false);
+      }
+    } catch (error) {
+      alert("Something went wrong" + error.message);
+      setLoading(false);
+    }
+  }
+
+  async function loadSentHistoryForZipArchive() {
     if (loading) return;
     setLoading(true);
 
@@ -56,7 +96,7 @@ function History({ loggedInUser }) {
       <h2>History Researcher</h2>
       <HistoryInput
         zipArchiveId={zipArchiveId}
-        onLoad={loadSentHistory}
+        onLoad={loadSentHistoryForZipArchive}
         onZipArchiveIdChange={handleChange}
       />
 

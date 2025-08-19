@@ -15,7 +15,7 @@ function ZipArchivesInput({ fileSetId, onFileSetIdChange, onLoad }) {
         value={fileSetId}
         onChange={onFileSetIdChange}
         onKeyDown={handleKeyDown}
-        placeholder="Enter File Set ID)"
+        placeholder="Enter File Set ID"
         className="path-input"
       />
       <button onClick={onLoad} className="scan-button">
