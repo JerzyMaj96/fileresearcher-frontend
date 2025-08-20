@@ -89,6 +89,14 @@ function ZipArchivesPage({ loggedInUser }) {
     }
   }
 
+  function formatSize(bytes) {
+    if (bytes === 0) return "0 B";
+    const sizes = ["B", "KB", "MB", "GB", "TB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    const value = bytes / Math.pow(1024, i);
+    return `${value.toFixed(2)} ${sizes[i]}`;
+  }
+
   return (
     <div className="ziparchives-explorer">
       <h2>Zip Archive Researcher</h2>
@@ -121,7 +129,7 @@ function ZipArchivesPage({ loggedInUser }) {
                     {zipArchive.id}
                   </td>
                   <td>{zipArchive.archiveName}</td>
-                  <td>{zipArchive.size}</td>
+                  <td>{formatSize(zipArchive.size)}</td>
                   <td>
                     {new Date(zipArchive.creationDate).toLocaleString("en-US", {
                       year: "numeric",
