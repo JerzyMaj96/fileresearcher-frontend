@@ -30,7 +30,7 @@ function Header({ loggedInUser, onLogout }) {
               <button
                 onClick={() => {
                   onLogout();
-                  closeMenu;
+                  closeMenu();
                 }}
               >
                 <LogoutIcon className="logout-icon" titleAccess="Log out" />

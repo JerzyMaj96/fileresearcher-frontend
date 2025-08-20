@@ -1,6 +1,12 @@
 import React from "react";
 
-function HistoryInput({ zipArchiveId, onZipArchiveIdChange, onLoad }) {
+function HistoryInput({
+  zipArchiveId,
+  onZipArchiveIdChange,
+  onLoad,
+  onGetLastRecipient,
+  lastRecipient,
+}) {
   function handleKeyDown(event) {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -10,17 +16,36 @@ function HistoryInput({ zipArchiveId, onZipArchiveIdChange, onLoad }) {
 
   return (
     <div className="path-input-group">
-      <input
-        type="text"
-        value={zipArchiveId}
-        onChange={onZipArchiveIdChange}
-        onKeyDown={handleKeyDown}
-        placeholder="Enter Zip archive ID)"
-        className="path-input"
-      />
-      <button onClick={onLoad} className="scan-button">
-        Load History
-      </button>
+      <div className="input-fields">
+        <input
+          type="text"
+          value={zipArchiveId}
+          onChange={onZipArchiveIdChange}
+          onKeyDown={handleKeyDown}
+          placeholder="Enter Zip archive ID"
+          className="path-input"
+        />
+        {zipArchiveId && (
+          <input
+            type="text"
+            value={lastRecipient}
+            readOnly
+            placeholder="Last recipient will appear here"
+            className="path-input"
+          />
+        )}
+      </div>
+
+      <div className="button-group">
+        <button onClick={onLoad} className="scan-button">
+          Load History
+        </button>
+        {zipArchiveId && (
+          <button onClick={onGetLastRecipient} className="scan-button">
+            Get the last recipient
+          </button>
+        )}
+      </div>
     </div>
   );
 }
