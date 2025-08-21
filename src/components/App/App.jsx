@@ -14,6 +14,7 @@ import FileSetsPage from "../FileSetsPage/FileSetsPage";
 import "./App.css";
 import History from "../History/History";
 import ZipArchivesPage from "../ZipArchivesPage/ZipArchivesPage";
+import ZipStatistics from "../ZipStatistics/ZipStatistics";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -88,6 +89,16 @@ function App() {
               element={
                 loggedInUser ? (
                   <History loggedInUser={loggedInUser} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route
+              path="/zip-stats"
+              element={
+                loggedInUser ? (
+                  <ZipStatistics loggedInUser={loggedInUser} />
                 ) : (
                   <Navigate to="/login" />
                 )
