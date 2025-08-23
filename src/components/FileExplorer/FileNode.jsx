@@ -40,6 +40,18 @@ function FileNode({ node, toggleSelect, selectedPaths }) {
     return `${value.toFixed(2)} ${sizes[i]}`;
   }
 
+  function calculateDirectorySize(node) {
+    if (!node.directory) {
+      return node.size || 0;
+    }
+    if (!node.children) return 0;
+
+    return node.children.reduce(
+      (total, child) => total + calculateDirectorySize(child),
+      0
+    );
+  }
+
   return (
     <div className="file-node">
       <div className="file-node-header">
@@ -62,8 +74,10 @@ function FileNode({ node, toggleSelect, selectedPaths }) {
         </span>
         <span className="file-meta">
           {isDirectory ? "Directory" : "File"}{" "}
-          {!isDirectory && node.size != null
-            ? `| ${formatSize(node.size)}`
+          {node.size != null || isDirectory
+            ? `| ${formatSize(
+                isDirectory ? calculateDirectorySize(node) : node.size
+              )}`
             : ""}
         </span>
       </div>

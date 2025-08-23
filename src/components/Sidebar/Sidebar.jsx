@@ -41,7 +41,7 @@ function Sidebar() {
         </li>
         <li>
           <NavLink
-            to="/zip-statistics"
+            to="/zip-stats"
             className={({ isActive }) => (isActive ? "active" : "")}
           >
             Zip Statistics
