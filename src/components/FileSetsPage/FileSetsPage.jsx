@@ -126,7 +126,7 @@ function FileSetsPage({ loggedInUser }) {
         <table className="filesets-table">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>File set ID</th>
               <th>Name</th>
               <th>Description</th>
               <th>Recipient E-mail</th>

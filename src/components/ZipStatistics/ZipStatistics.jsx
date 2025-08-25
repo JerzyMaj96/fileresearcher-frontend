@@ -84,28 +84,30 @@ function ZipStatistics({ loggedInUser }) {
   }
 
   return (
-    <div className="zip-stats">
-      <h2>Zip Statistics</h2>
+    <div>
+      <div className="zip-stats">
+        <h2>Zip Statistics</h2>
 
-      <ZipStatisticsInput onRefresh={loadStats} onFilterChange={setFilter} />
+        <ZipStatisticsInput onRefresh={loadStats} onFilterChange={setFilter} />
 
-      {loading && <div className="loader"></div>}
+        {loading && <div className="loader"></div>}
 
-      {stats && (
-        <div className="stats-summary">
-          <div className="stat-card success">
-            ✅ Successful: {stats.successCount}
-          </div>
-          <div className="stat-card failure">
-            ❌ Failed: {stats.failureCount}
-          </div>
-          {stats.totalSize && (
-            <div className="stat-card">
-              📦 Total size: {stats.totalSize} bytes
+        {stats && (
+          <div className="stats-summary">
+            <div className="stat-card success">
+              ✅ Successful: {stats.successCount}
             </div>
-          )}
-        </div>
-      )}
+            <div className="stat-card failure">
+              ❌ Failed: {stats.failureCount}
+            </div>
+            {stats.totalSize && (
+              <div className="stat-card">
+                📦 Total size: {stats.totalSize} bytes
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {filteredZips.length > 0 && (
         <div className="large-archives">
@@ -113,7 +115,7 @@ function ZipStatistics({ loggedInUser }) {
           <table>
             <thead>
               <tr>
-                <th>ID</th>
+                <th>Zip Archive ID</th>
                 <th>Archive Name</th>
                 <th>Size (MB)</th>
                 <th>Status</th>
