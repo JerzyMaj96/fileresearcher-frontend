@@ -33,11 +33,6 @@
   text-align: left;
 }
 
-.filesets-table th {
-  background-color: rgba(255, 255, 255, 0.1);
-  font-weight: 500;
-}
-
 .filesets-table tr:nth-child(even) {
   background-color: rgba(255, 255, 255, 0.05);
 }
