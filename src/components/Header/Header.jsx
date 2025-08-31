@@ -15,6 +15,39 @@ function Header({ loggedInUser, onLogout }) {
     setMenuOpen(false);
   };
 
+  async function handleDeleteUser() {
+    if (!window.confirm(`Would you like to delete your account?`)) {
+      return closeMenu(false);
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/file-researcher/users/${loggedInUser.credentials.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization:
+              "Basic " +
+              btoa(
+                loggedInUser.credentials.username +
+                  ":" +
+                  loggedInUser.credentials.password
+              ),
+          },
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        alert("Account deleted successfully");
+        onLogout();
+      } else {
+        alert("Failed to delete your user account");
+      }
+    } catch (error) {
+      alert("Something went wrong: " + error.message);
+    }
+  }
+
   return (
     <header>
       <HomeFilledIcon />
@@ -36,6 +69,7 @@ function Header({ loggedInUser, onLogout }) {
                 <LogoutIcon className="logout-icon" titleAccess="Log out" />
                 Log out
               </button>
+              <button onClick={handleDeleteUser}>Delete account</button>
             </div>
           )}
         </div>
