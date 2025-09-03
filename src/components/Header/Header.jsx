@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import HomeFilledIcon from "@mui/icons-material/HomeFilled";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
 import "./Header.css";
 
 function Header({ loggedInUser, onLogout }) {
@@ -69,7 +70,10 @@ function Header({ loggedInUser, onLogout }) {
                 <LogoutIcon className="logout-icon" titleAccess="Log out" />
                 Log out
               </button>
-              <button onClick={handleDeleteUser}>Delete account</button>
+              <button onClick={handleDeleteUser}>
+                <DeleteIcon />
+                Delete account
+              </button>
             </div>
           )}
         </div>
