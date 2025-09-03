@@ -8,9 +8,9 @@ The project is built with React and works with a Spring Boot backend.
 ## Technologies
 
 - [React](https://reactjs.org/) + Hooks
-- [Vite](https://vitejs.dev/) 
+- [Vite](https://vitejs.dev/)
 - [Material UI Icons](https://mui.com/material-ui/material-icons/)
-- CSS 
+- CSS
 - Fetch API
 
 ---
@@ -19,12 +19,12 @@ The project is built with React and works with a Spring Boot backend.
 
 Important components:
 
-- `Header` – user navigation, menu 
+- `Header` – user navigation, menu
 - `Login` – user logging
 - `Register` – new account registration
 - `History` – browsing sending history (table + statuses)
 - `HistoryInput` – search history by ZIP archive ID
-- `ProtectedRoute` – zabezpieczenie tras wymagających logowania
+- `ProtectedRoute` – protects routes that require authentication
 
 ---
 
@@ -43,19 +43,24 @@ Important components:
    ```bash
    git clone https://github.com/JerzyMaj96/fileresearcher-frontend.git
    cd fileresearcher-frontend
+   ```
+
 2. Install dependencies:
    ```bash
    npm install
-4. Run application in dev mode:
+   ```
+3. Run application in dev mode:
    ```bash
    npm run dev
+   ```
 
 By default the application will run at:
-    ```bash
+`bash
     http://localhost:5173
-    ```
+    `
 
 ## Features
+
 - User registration and login
 - Browsing ZIP archive sending history
 - Displaying the last recipient of a selected archive
@@ -64,7 +69,7 @@ By default the application will run at:
 
 ## Screenshots
 
-
 ## Licence
+
 This project is licensed under the MIT License.
 You are free to use, modify, and distribute it.
