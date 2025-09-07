@@ -17,6 +17,12 @@
   color: white;
 }
 
+.path-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .path-input-group {
   display: flex;
   gap: 10px;
