@@ -107,7 +107,49 @@ function FileSetsPage({ loggedInUser }) {
       if (response.ok) {
         alert("Files have been send successfully");
       } else {
-        alert("Failed to send the files.");
+        alert("Failed to send the files");
+      }
+    } catch (error) {
+      alert("Something went wrong: " + error.message);
+    }
+  }
+
+  async function changeRecipientEmail(fileSetId, oldRecipientEmail) {
+    const newRecipientEmail = window.prompt(
+      "Enter new recipient email: " + oldRecipientEmail
+    );
+
+    if (!newRecipientEmail || newRecipientEmail === oldRecipientEmail) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/recipient-email?newRecipientEmail=${newRecipientEmail}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Basic " +
+              btoa(
+                loggedInUser.credentials.username +
+                  ":" +
+                  loggedInUser.credentials.password
+              ),
+          },
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        alert("Recipient email updated successfully");
+        setFileSets((prev) =>
+          prev.map((set) =>
+            set.id === fileSetId
+              ? { ...set, recipientEmail: newRecipientEmail }
+              : set
+          )
+        );
+      } else {
+        alert("Failed to update recipient email");
       }
     } catch (error) {
       alert("Something went wrong: " + error.message);
@@ -141,7 +183,14 @@ function FileSetsPage({ loggedInUser }) {
                 <td>{set.id}</td>
                 <td>{set.name}</td>
                 <td>{set.description}</td>
-                <td>{set.recipientEmail}</td>
+                <td
+                  onClick={() =>
+                    changeRecipientEmail(set.id, set.recipientEmail)
+                  }
+                  style={{ cursor: "pointer" }}
+                >
+                  {set.recipientEmail}
+                </td>
                 <td>
                   {new Date(set.creationDate).toLocaleString("en-US", {
                     year: "numeric",
