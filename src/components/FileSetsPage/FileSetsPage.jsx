@@ -114,6 +114,84 @@ function FileSetsPage({ loggedInUser }) {
     }
   }
 
+  async function changeFileSetName(fileSetId, oldName) {
+    const newName = window.prompt("Enter new FileSet name: " + oldName);
+
+    if (!newName || newName === oldName) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/name?newName=${newName}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Basic " +
+              btoa(
+                loggedInUser.credentials.username +
+                  ":" +
+                  loggedInUser.credentials.password
+              ),
+          },
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        alert("Name updated successfully");
+        setFileSets((prev) =>
+          prev.map((set) =>
+            set.id === fileSetId ? { ...set, name: newName } : set
+          )
+        );
+      } else {
+        alert("Failed to update the name of the file set");
+      }
+    } catch (error) {
+      alert("Something went wrong: " + error.message);
+    }
+  }
+
+  async function changeFileSetDescription(fileSetId, oldDescription) {
+    const newDescription = window.prompt(
+      "Enter new FileSet description: " + oldDescription
+    );
+
+    if (!newDescription || newDescription === oldDescription) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/description?newDescription=${newDescription}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Basic " +
+              btoa(
+                loggedInUser.credentials.username +
+                  ":" +
+                  loggedInUser.credentials.password
+              ),
+          },
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        alert("FileSet description updated successfully");
+        setFileSets((prev) =>
+          prev.map((set) =>
+            set.id === fileSetId ? { ...set, description: newDescription } : set
+          )
+        );
+      } else {
+        alert("Failed to update the description of the file set");
+      }
+    } catch (error) {
+      alert("Something went wrong: " + error.message);
+    }
+  }
+
   async function changeRecipientEmail(fileSetId, oldRecipientEmail) {
     const newRecipientEmail = window.prompt(
       "Enter new recipient email: " + oldRecipientEmail
@@ -181,8 +259,20 @@ function FileSetsPage({ loggedInUser }) {
             {fileSets.map((set) => (
               <tr key={set.id}>
                 <td>{set.id}</td>
-                <td>{set.name}</td>
-                <td>{set.description}</td>
+                <td
+                  onClick={() => changeFileSetName(set.id, set.name)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {set.name}
+                </td>
+                <td
+                  onClick={() =>
+                    changeFileSetDescription(set.id, set.description)
+                  }
+                  style={{ cursor: "pointer" }}
+                >
+                  {set.description}
+                </td>
                 <td
                   onClick={() =>
                     changeRecipientEmail(set.id, set.recipientEmail)
