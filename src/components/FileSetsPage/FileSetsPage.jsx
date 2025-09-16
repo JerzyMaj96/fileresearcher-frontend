@@ -9,71 +9,58 @@ function FileSetsPage({ loggedInUser }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchFileSets();
+    (async () => {
+      try {
+        const data = await apiRequest(
+          "http://localhost:8080/file-researcher/file-sets"
+        );
+        setFileSets(data);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [loggedInUser]);
 
-  async function fetchFileSets() {
+  async function apiRequest(url, methodType = {}) {
     try {
-      const response = await fetch(
-        "http://localhost:8080/file-researcher/file-sets",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Basic " +
-              btoa(
-                loggedInUser.credentials.username +
-                  ":" +
-                  loggedInUser.credentials.password
-              ),
-          },
-          credentials: "include",
-        }
-      );
+      const response = await fetch(url, {
+        ...methodType,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "Basic " +
+            btoa(
+              loggedInUser.credentials.username +
+                ":" +
+                loggedInUser.credentials.password
+            ),
+          ...methodType.headers,
+        },
+        credentials: "include",
+      });
 
-      const data = await response.json();
-      setFileSets(data);
+      if (!response.ok) {
+        throw new Error(`Request failed: ${response.status}`);
+      }
+      return response.json().catch(() => null);
     } catch (error) {
       setError(error.message);
-    } finally {
-      setLoading(false);
+      alert("Something went wrong: " + error.message);
+      throw error;
     }
   }
 
   async function handleDeleteFileSet(fileSetId) {
-    if (!window.confirm("Are you sure you want to delete this file set ?")) {
+    if (!window.confirm("Are you sure you want to delete this file set ?"))
       return;
-    }
 
-    try {
-      const response = await fetch(
-        `http://localhost:8080/file-researcher/file-sets/${fileSetId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Basic " +
-              btoa(
-                loggedInUser.credentials.username +
-                  ":" +
-                  loggedInUser.credentials.password
-              ),
-          },
-          credentials: "include",
-        }
-      );
+    await apiRequest(
+      `http://localhost:8080/file-researcher/file-sets/${fileSetId}`,
+      { method: "DELETE" }
+    );
 
-      if (response.ok) {
-        alert("File set has been successfully deleted");
-        setFileSets((prev) => prev.filter((set) => set.id !== fileSetId));
-      } else {
-        alert("Failed to delete file set");
-      }
-    } catch (error) {
-      alert("Something went wrong: " + error.message);
-    }
+    setFileSets((prev) => prev.filter((set) => set.id !== fileSetId));
+    alert("File set has been successfully deleted");
   }
 
   async function handleSendFileZip(fileSetId, recipientEmail) {
@@ -81,157 +68,33 @@ function FileSetsPage({ loggedInUser }) {
       !window.confirm(
         `Would you like to send this file set to ${recipientEmail}?`
       )
-    ) {
+    )
       return;
-    }
 
-    try {
-      const response = await fetch(
-        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/zip-archives/send?recipientEmail=${recipientEmail}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Basic " +
-              btoa(
-                loggedInUser.credentials.username +
-                  ":" +
-                  loggedInUser.credentials.password
-              ),
-          },
-          credentials: "include",
-        }
-      );
-
-      if (response.ok) {
-        alert("Files have been send successfully");
-      } else {
-        alert("Failed to send the files");
-      }
-    } catch (error) {
-      alert("Something went wrong: " + error.message);
-    }
-  }
-
-  async function changeFileSetName(fileSetId, oldName) {
-    const newName = window.prompt("Enter new FileSet name: " + oldName);
-
-    if (!newName || newName === oldName) return;
-
-    try {
-      const response = await fetch(
-        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/name?newName=${newName}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Basic " +
-              btoa(
-                loggedInUser.credentials.username +
-                  ":" +
-                  loggedInUser.credentials.password
-              ),
-          },
-          credentials: "include",
-        }
-      );
-      if (response.ok) {
-        alert("Name updated successfully");
-        setFileSets((prev) =>
-          prev.map((set) =>
-            set.id === fileSetId ? { ...set, name: newName } : set
-          )
-        );
-      } else {
-        alert("Failed to update the name of the file set");
-      }
-    } catch (error) {
-      alert("Something went wrong: " + error.message);
-    }
-  }
-
-  async function changeFileSetDescription(fileSetId, oldDescription) {
-    const newDescription = window.prompt(
-      "Enter new FileSet description: " + oldDescription
+    await apiRequest(
+      `http://localhost:8080/file-researcher/file-sets/${fileSetId}/zip-archives/send?recipientEmail=${recipientEmail}`,
+      { method: "POST" }
     );
 
-    if (!newDescription || newDescription === oldDescription) return;
-
-    try {
-      const response = await fetch(
-        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/description?newDescription=${newDescription}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Basic " +
-              btoa(
-                loggedInUser.credentials.username +
-                  ":" +
-                  loggedInUser.credentials.password
-              ),
-          },
-          credentials: "include",
-        }
-      );
-      if (response.ok) {
-        alert("FileSet description updated successfully");
-        setFileSets((prev) =>
-          prev.map((set) =>
-            set.id === fileSetId ? { ...set, description: newDescription } : set
-          )
-        );
-      } else {
-        alert("Failed to update the description of the file set");
-      }
-    } catch (error) {
-      alert("Something went wrong: " + error.message);
-    }
+    alert("Files have been sent successfully");
   }
 
-  async function changeRecipientEmail(fileSetId, oldRecipientEmail) {
-    const newRecipientEmail = window.prompt(
-      "Enter new recipient email: " + oldRecipientEmail
+  async function updateFileSet(fileSetId, field, oldValue, promptText) {
+    const newValue = window.prompt(promptText, oldValue);
+    if (!newValue || newValue === oldValue) return;
+
+    await apiRequest(
+      `http://localhost:8080/file-researcher/file-sets/${fileSetId}/${field}?${field}=${newValue}`,
+      { method: "PATCH" }
     );
 
-    if (!newRecipientEmail || newRecipientEmail === oldRecipientEmail) return;
+    setFileSets((prev) =>
+      prev.map((set) =>
+        set.id === fileSetId ? { ...set, [field]: newValue } : set
+      )
+    );
 
-    try {
-      const response = await fetch(
-        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/recipient-email?newRecipientEmail=${newRecipientEmail}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Basic " +
-              btoa(
-                loggedInUser.credentials.username +
-                  ":" +
-                  loggedInUser.credentials.password
-              ),
-          },
-          credentials: "include",
-        }
-      );
-      if (response.ok) {
-        alert("Recipient email updated successfully");
-        setFileSets((prev) =>
-          prev.map((set) =>
-            set.id === fileSetId
-              ? { ...set, recipientEmail: newRecipientEmail }
-              : set
-          )
-        );
-      } else {
-        alert("Failed to update recipient email");
-      }
-    } catch (error) {
-      alert("Something went wrong: " + error.message);
-    }
+    alert(`${field} updated successfully`);
   }
 
   if (loading) return <div className="loader" />;
@@ -260,14 +123,26 @@ function FileSetsPage({ loggedInUser }) {
               <tr key={set.id}>
                 <td>{set.id}</td>
                 <td
-                  onClick={() => changeFileSetName(set.id, set.name)}
+                  onClick={() =>
+                    updateFileSet(
+                      set.id,
+                      "name",
+                      set.name,
+                      "Enter new FileSet name"
+                    )
+                  }
                   style={{ cursor: "pointer" }}
                 >
                   {set.name}
                 </td>
                 <td
                   onClick={() =>
-                    changeFileSetDescription(set.id, set.description)
+                    updateFileSet(
+                      set.id,
+                      "description",
+                      set.description,
+                      "Enter new FileSet description"
+                    )
                   }
                   style={{ cursor: "pointer" }}
                 >
@@ -275,7 +150,12 @@ function FileSetsPage({ loggedInUser }) {
                 </td>
                 <td
                   onClick={() =>
-                    changeRecipientEmail(set.id, set.recipientEmail)
+                    updateFileSet(
+                      set.id,
+                      "recipientEmail",
+                      set.recipientEmail,
+                      "Enter new recipient email"
+                    )
                   }
                   style={{ cursor: "pointer" }}
                 >
