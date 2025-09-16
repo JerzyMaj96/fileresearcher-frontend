@@ -34,7 +34,6 @@ function FileSetsPage({ loggedInUser }) {
                 ":" +
                 loggedInUser.credentials.password
             ),
-          ...methodType.headers,
         },
         credentials: "include",
       });
