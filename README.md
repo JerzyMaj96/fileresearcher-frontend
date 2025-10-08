@@ -69,7 +69,21 @@ By default the application will run at:
 
 ## Screenshots
 
+<img width="1728" height="1117" alt="Zrzut ekranu 2025-10-8 o 15 12 18" src="https://github.com/user-attachments/assets/826824e2-f832-4eba-836c-69b66f6bf3d8" />
+
+
+<img width="1728" height="1117" alt="Zrzut ekranu 2025-10-8 o 15 15 08" src="https://github.com/user-attachments/assets/ffa35e5d-5829-485f-8670-b04877280b54" />
+
+<img width="1728" height="1117" alt="Zrzut ekranu 2025-10-8 o 15 15 58" src="https://github.com/user-attachments/assets/b4fc61f2-0613-4a3e-8f24-6f22f6320ecf" />
+
+<img width="1728" height="1117" alt="Zrzut ekranu 2025-10-8 o 15 16 16" src="https://github.com/user-attachments/assets/38e86c76-1c5f-44b4-aeb0-2474001bd079" />
+
+<img width="1728" height="1117" alt="Zrzut ekranu 2025-10-8 o 15 16 29" src="https://github.com/user-attachments/assets/64216130-1b72-497e-93ad-7e3cb94b4975" />
+
+<img width="1728" height="1117" alt="Zrzut ekranu 2025-10-8 o 15 17 23" src="https://github.com/user-attachments/assets/90b2848d-4e7b-4c54-8157-a7f37d56ecba" />
+
 ## Licence
 
 This project is licensed under the MIT License.
 You are free to use, modify, and distribute it.
+
