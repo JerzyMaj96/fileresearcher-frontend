@@ -26,7 +26,7 @@ function LoggingForm({ onLogin }) {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/file-researcher/users/me",
+        "http://localhost:8080/file-researcher/users/authentication",
         {
           method: "GET",
           headers: {
