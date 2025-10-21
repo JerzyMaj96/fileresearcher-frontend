@@ -23,7 +23,7 @@ function Header({ loggedInUser, onLogout }) {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/file-researcher/users/${loggedInUser.credentials.id}`,
+        `http://localhost:8080/file-researcher/users/delete-me`,
         {
           method: "DELETE",
           headers: {
