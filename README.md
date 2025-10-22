@@ -82,8 +82,14 @@ By default the application will run at:
 
 <img width="1728" height="1117" alt="Zrzut ekranu 2025-10-8 o 15 17 23" src="https://github.com/user-attachments/assets/90b2848d-4e7b-4c54-8157-a7f37d56ecba" />
 
+## AI Assistance Note
+During the development of this project, I used AI tools (such as ChatGPT) to assist in writing and refining some parts of the code.
+Some methods and implementations were generated with AI support and later reviewed, understood, and integrated by me.
+This project represents my learning process in backend development and demonstrates my ability to effectively use modern tools in software creation.
+
 ## Licence
 
 This project is licensed under the MIT License.
 You are free to use, modify, and distribute it.
+
 
