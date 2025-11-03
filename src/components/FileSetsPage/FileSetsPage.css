@@ -56,3 +56,13 @@
   cursor: pointer;
   color: rgb(8, 165, 8);
 }
+
+.status-active {
+  color: #acaf4c;
+  font-weight: bold;
+}
+
+.status-sent {
+  color: rgb(8, 165, 8);
+  font-weight: bold;
+}

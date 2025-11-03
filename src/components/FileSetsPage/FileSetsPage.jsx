@@ -112,6 +112,7 @@ function FileSetsPage({ loggedInUser }) {
               <th>Name</th>
               <th>Description</th>
               <th>Recipient E-mail</th>
+              <th>STATUS</th>
               <th>Creation Date</th>
               <th>Delete</th>
               <th>Send</th>
@@ -159,6 +160,9 @@ function FileSetsPage({ loggedInUser }) {
                   style={{ cursor: "pointer" }}
                 >
                   {set.recipientEmail}
+                </td>
+                <td className={`status-${set.status.toLowerCase()}`}>
+                  {set.status}
                 </td>
                 <td>
                   {new Date(set.creationDate).toLocaleString("en-US", {
