@@ -51,7 +51,7 @@ function ZipStatistics({ loggedInUser }) {
     }
   }
 
-  const minLargeSize = 0; //POSSIBLE TO CHANGE FOR 1024 * 1024 * 1024 = 1GB
+  const minLargeSize = 0; //POSSIBLE TO CHANGE TO 1024 * 1024 * 1024 = 1GB
 
   async function loadLargeZips() {
     try {
