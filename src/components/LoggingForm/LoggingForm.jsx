@@ -26,27 +26,26 @@ function LoggingForm({ onLogin }) {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/file-researcher/users/authentication",
+        "http://localhost:8080/file-researcher/auth/login",
         {
-          method: "GET",
+          method: "POST",
           headers: {
-            Authorization: "Basic " + btoa(userName + ":" + userPassword),
+            "Content-Type": "application/json",
           },
-          credentials: "include",
+          body: JSON.stringify({
+            username: userName,
+            password: userPassword,
+          }),
         }
       );
 
       if (response.ok) {
-        const userData = await response.json();
-        console.log("Logged in user:", userData);
+        const token = await response.text();
+        console.log("JWT Token received:", token);
 
-        onLogin({
-          ...userData,
-          credentials: {
-            username: userName,
-            password: userPassword,
-          },
-        });
+        localStorage.setItem("jwtToken", token);
+
+        await fetchUserDetails(userName, token);
 
         setUser({
           userName: "",
@@ -60,6 +59,27 @@ function LoggingForm({ onLogin }) {
       }
     } catch (error) {
       alert("Something went wrong: " + error.message);
+    }
+  }
+
+  async function fetchUserDetails(userName, token) {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/file-researcher/users/authentication",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const userData = await response.json();
+        onLogin({ ...userData, token: token });
+      }
+    } catch (error) {
+      console.error("Failed to fetch user details:", error);
     }
   }
 
