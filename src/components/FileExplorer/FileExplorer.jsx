@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./FileExplorer.css";
 import FileNode from "./FileNode";
 import PathInput from "./PathInput";
-import { request } from "../api_helper";
+import { authFetch } from "../api_helper";
 
 function FileExplorer({ loggedInUser }) {
   const [path, setPath] = useState("");
@@ -29,7 +29,7 @@ function FileExplorer({ loggedInUser }) {
     setLoading(true);
 
     try {
-      const response = await request(
+      const response = await authFetch(
         "POST",
         "http://localhost:8080/file-researcher/explorer/scan",
         { path: path }
@@ -84,7 +84,7 @@ function FileExplorer({ loggedInUser }) {
     }
 
     try {
-      const response = await request(
+      const response = await authFetch(
         "POST",
         "http://localhost:8080/file-researcher/file-sets",
         {

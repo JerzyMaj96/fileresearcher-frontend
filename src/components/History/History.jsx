@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./History.css";
 import HistoryInput from "./HistoryInput";
-import { request } from "../api_helper";
+import { authFetch } from "../api_helper";
 
 function History({ loggedInUser }) {
   const [zipArchiveId, setZipArchiveId] = useState("");
@@ -21,7 +21,7 @@ function History({ loggedInUser }) {
     setLoading(true);
 
     try {
-      const response = await request(
+      const response = await authFetch(
         "GET",
         `http://localhost:8080/file-researcher/zip-archives/history`
       );
@@ -45,7 +45,7 @@ function History({ loggedInUser }) {
     setLoading(true);
 
     try {
-      const response = await request(
+      const response = await authFetch(
         "GET",
         `http://localhost:8080/file-researcher/zip-archives/${zipArchiveId}/history`
       );
@@ -72,7 +72,7 @@ function History({ loggedInUser }) {
     setLoading(true);
 
     try {
-      const response = await request(
+      const response = await authFetch(
         "GET",
         `http://localhost:8080/file-researcher/zip-archives/${zipArchiveId}/history/last-recipient`
       );

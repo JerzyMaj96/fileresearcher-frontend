@@ -15,7 +15,7 @@ import "./App.css";
 import History from "../History/History";
 import ZipArchivesPage from "../ZipArchivesPage/ZipArchivesPage";
 import ZipStatistics from "../ZipStatistics/ZipStatistics";
-import { request, getAuthToken, setAuthToken } from "../api_helper";
+import { authFetch, getAuthToken, setAuthToken } from "../api_helper";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -25,7 +25,7 @@ function App() {
     const token = getAuthToken();
 
     if (token) {
-      request(
+      authFetch(
         "GET",
         "http://localhost:8080/file-researcher/users/authentication"
       )

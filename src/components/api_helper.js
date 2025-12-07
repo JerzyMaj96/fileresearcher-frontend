@@ -6,7 +6,7 @@ export const setAuthToken = (token) => {
   localStorage.setItem("jwtToken", token);
 };
 
-export const request = (method, url, body) => {
+export const authFetch = (method, url, body) => {
   let headers = {
     "Content-Type": "application/json",
   };

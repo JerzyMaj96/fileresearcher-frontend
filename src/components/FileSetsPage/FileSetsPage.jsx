@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./FileSetsPage.css";
 import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { request } from "../api_helper";
+import { authFetch } from "../api_helper";
 
 function FileSetsPage({ loggedInUser }) {
   const [fileSets, setFileSets] = useState([]);
@@ -12,7 +12,7 @@ function FileSetsPage({ loggedInUser }) {
   useEffect(() => {
     (async () => {
       try {
-        const response = await request(
+        const response = await authFetch(
           "GET",
           "http://localhost:8080/file-researcher/file-sets"
         );
@@ -36,7 +36,7 @@ function FileSetsPage({ loggedInUser }) {
       return;
 
     try {
-      const response = await request(
+      const response = await authFetch(
         "DELETE",
         `http://localhost:8080/file-researcher/file-sets/${fileSetId}`
       );
@@ -61,7 +61,7 @@ function FileSetsPage({ loggedInUser }) {
       return;
 
     try {
-      const response = await request(
+      const response = await authFetch(
         "POST",
         `http://localhost:8080/file-researcher/file-sets/${fileSetId}/zip-archives/send?recipientEmail=${recipientEmail}`
       );
@@ -81,7 +81,7 @@ function FileSetsPage({ loggedInUser }) {
     if (!newValue || newValue === oldValue) return;
 
     try {
-      const response = await request(
+      const response = await authFetch(
         "PATCH",
         `http://localhost:8080/file-researcher/file-sets/${fileSetId}/${field}?${field}=${newValue}`
       );

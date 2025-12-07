@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./ZipArchivesPage.css";
 import ZipArchivesInput from "./ZipArchivesInput";
 import { FaFileArchive } from "react-icons/fa";
-import { request } from "../api_helper";
+import { authFetch } from "../api_helper";
 import { formatSize } from "../utils";
 
 function ZipArchivesPage({ loggedInUser }) {
@@ -22,7 +22,7 @@ function ZipArchivesPage({ loggedInUser }) {
     setLoading(true);
 
     try {
-      const response = await request(
+      const response = await authFetch(
         "GET",
         "http://localhost:8080/file-researcher/zip-archives"
       );
@@ -46,7 +46,7 @@ function ZipArchivesPage({ loggedInUser }) {
     setLoading(true);
 
     try {
-      const response = await request(
+      const response = await authFetch(
         "GET",
         `http://localhost:8080/file-researcher/file-sets/${fileSetId}/zip-archives`
       );

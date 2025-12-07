@@ -4,7 +4,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./Header.css";
-import { request } from "../api_helper";
+import { authFetch } from "../api_helper";
 
 function Header({ loggedInUser, onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -23,7 +23,7 @@ function Header({ loggedInUser, onLogout }) {
     }
 
     try {
-      const response = await request(
+      const response = await authFetch(
         "DELETE",
         "http://localhost:8080/file-researcher/users/delete-me"
       );
