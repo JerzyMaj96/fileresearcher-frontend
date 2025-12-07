@@ -4,6 +4,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./Header.css";
+import { request } from "../api_helper";
 
 function Header({ loggedInUser, onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,22 +23,11 @@ function Header({ loggedInUser, onLogout }) {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/file-researcher/users/delete-me`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization:
-              "Basic " +
-              btoa(
-                loggedInUser.credentials.username +
-                  ":" +
-                  loggedInUser.credentials.password
-              ),
-          },
-          credentials: "include",
-        }
+      const response = await request(
+        "DELETE",
+        "http://localhost:8080/file-researcher/users/delete-me"
       );
+
       if (response.ok) {
         alert("Account deleted successfully");
         onLogout();

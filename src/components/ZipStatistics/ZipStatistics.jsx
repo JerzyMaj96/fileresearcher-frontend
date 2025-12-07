@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "./ZipStatistics.css";
 import ZipStatisticsInput from "./ZipStatisticsInput";
+import { request } from "../api_helper";
+import { formatSize } from "../utils";
 
 function ZipStatistics({ loggedInUser }) {
   const [stats, setStats] = useState(null);
@@ -15,27 +17,11 @@ function ZipStatistics({ loggedInUser }) {
     }
   }, [loggedInUser]);
 
-  async function fetchWithAuth(url) {
-    return fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-        Authorization:
-          "Basic " +
-          btoa(
-            loggedInUser.credentials.username +
-              ":" +
-              loggedInUser.credentials.password
-          ),
-      },
-      credentials: "include",
-    });
-  }
-
   async function loadStats() {
     setLoading(true);
     try {
-      const response = await fetchWithAuth(
+      const response = await request(
+        "GET",
         "http://localhost:8080/file-researcher/zip-archives/stats"
       );
       if (response.ok) {
@@ -55,7 +41,8 @@ function ZipStatistics({ loggedInUser }) {
 
   async function loadLargeZips() {
     try {
-      const response = await fetchWithAuth(
+      const response = await request(
+        "GET",
         `http://localhost:8080/file-researcher/zip-archives/large?minSize=${minLargeSize}`
       );
       if (response.ok) {
@@ -74,14 +61,6 @@ function ZipStatistics({ loggedInUser }) {
       zip.recipientEmail?.toLowerCase().includes(filter.toLowerCase()) ||
       zip.status?.toLowerCase().includes(filter.toLowerCase())
   );
-
-  function formatSize(bytes) {
-    if (bytes === 0) return "0 B";
-    const sizes = ["B", "KB", "MB", "GB", "TB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    const value = bytes / Math.pow(1024, i);
-    return `${value.toFixed(2)} ${sizes[i]}`;
-  }
 
   return (
     <div>

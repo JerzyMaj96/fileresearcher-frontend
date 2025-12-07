@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./FileExplorer.css";
 import FileNode from "./FileNode";
 import PathInput from "./PathInput";
+import { request } from "../api_helper";
 
 function FileExplorer({ loggedInUser }) {
   const [path, setPath] = useState("");
@@ -28,13 +29,10 @@ function FileExplorer({ loggedInUser }) {
     setLoading(true);
 
     try {
-      const response = await fetch(
+      const response = await request(
+        "POST",
         "http://localhost:8080/file-researcher/explorer/scan",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ path }),
-        }
+        { path: path }
       );
 
       if (response.ok) {
@@ -86,27 +84,14 @@ function FileExplorer({ loggedInUser }) {
     }
 
     try {
-      const response = await fetch(
+      const response = await request(
+        "POST",
         "http://localhost:8080/file-researcher/file-sets",
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Basic " +
-              btoa(
-                loggedInUser.credentials.username +
-                  ":" +
-                  loggedInUser.credentials.password
-              ),
-          },
-          body: JSON.stringify({
-            name,
-            description,
-            recipientEmail,
-            selectedPaths,
-          }),
-          credentials: "include",
+          name,
+          description,
+          recipientEmail,
+          selectedPaths,
         }
       );
       if (response.ok) {

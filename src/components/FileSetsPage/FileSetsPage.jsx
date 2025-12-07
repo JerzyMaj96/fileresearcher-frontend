@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./FileSetsPage.css";
 import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { request } from "../api_helper";
 
 function FileSetsPage({ loggedInUser }) {
   const [fileSets, setFileSets] = useState([]);
@@ -11,55 +12,44 @@ function FileSetsPage({ loggedInUser }) {
   useEffect(() => {
     (async () => {
       try {
-        const data = await apiRequest(
+        const response = await request(
+          "GET",
           "http://localhost:8080/file-researcher/file-sets"
         );
-        setFileSets(data);
+
+        if (response.ok) {
+          const data = await response.json();
+          setFileSets(data);
+        } else {
+          setError("Failed to fetch file sets: " + response.statusText);
+        }
+      } catch (err) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     })();
   }, [loggedInUser]);
 
-  async function apiRequest(url, methodType = {}) {
-    try {
-      const response = await fetch(url, {
-        ...methodType,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization:
-            "Basic " +
-            btoa(
-              loggedInUser.credentials.username +
-                ":" +
-                loggedInUser.credentials.password
-            ),
-        },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error(`Request failed: ${response.status}`);
-      }
-      return response.json().catch(() => null);
-    } catch (error) {
-      setError(error.message);
-      alert("Something went wrong: " + error.message);
-      throw error;
-    }
-  }
-
   async function handleDeleteFileSet(fileSetId) {
     if (!window.confirm("Are you sure you want to delete this file set ?"))
       return;
 
-    await apiRequest(
-      `http://localhost:8080/file-researcher/file-sets/${fileSetId}`,
-      { method: "DELETE" }
-    );
+    try {
+      const response = await request(
+        "DELETE",
+        `http://localhost:8080/file-researcher/file-sets/${fileSetId}`
+      );
 
-    setFileSets((prev) => prev.filter((set) => set.id !== fileSetId));
-    alert("File set has been successfully deleted");
+      if (response.ok) {
+        setFileSets((prev) => prev.filter((set) => set.id !== fileSetId));
+        alert("File set has been successfully deleted");
+      } else {
+        alert("Failed to delete file set: " + (await response.text()));
+      }
+    } catch (error) {
+      alert("Something went wrong: " + error.message);
+    }
   }
 
   async function handleSendFileZip(fileSetId, recipientEmail) {
@@ -70,30 +60,45 @@ function FileSetsPage({ loggedInUser }) {
     )
       return;
 
-    await apiRequest(
-      `http://localhost:8080/file-researcher/file-sets/${fileSetId}/zip-archives/send?recipientEmail=${recipientEmail}`,
-      { method: "POST" }
-    );
+    try {
+      const response = await request(
+        "POST",
+        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/zip-archives/send?recipientEmail=${recipientEmail}`
+      );
 
-    alert("Files have been sent successfully");
+      if (response.ok) {
+        alert("Files have been sent successfully");
+      } else {
+        alert("Failed to send files: " + (await response.text()));
+      }
+    } catch (error) {
+      alert("Something went wrong: " + error.message);
+    }
   }
 
   async function updateFileSet(fileSetId, field, oldValue, promptText) {
     const newValue = window.prompt(promptText, oldValue);
     if (!newValue || newValue === oldValue) return;
 
-    await apiRequest(
-      `http://localhost:8080/file-researcher/file-sets/${fileSetId}/${field}?${field}=${newValue}`,
-      { method: "PATCH" }
-    );
+    try {
+      const response = await request(
+        "PATCH",
+        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/${field}?${field}=${newValue}`
+      );
 
-    setFileSets((prev) =>
-      prev.map((set) =>
-        set.id === fileSetId ? { ...set, [field]: newValue } : set
-      )
-    );
-
-    alert(`${field} updated successfully`);
+      if (response.ok) {
+        setFileSets((prev) =>
+          prev.map((set) =>
+            set.id === fileSetId ? { ...set, [field]: newValue } : set
+          )
+        );
+        alert(`${field} updated successfully`);
+      } else {
+        alert(`Failed to update ${field}: ` + (await response.text()));
+      }
+    } catch (error) {
+      alert("Something went wrong: " + error.message);
+    }
   }
 
   if (loading) return <div className="loader" />;

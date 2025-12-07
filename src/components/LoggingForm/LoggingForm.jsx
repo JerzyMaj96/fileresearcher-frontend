@@ -41,11 +41,11 @@ function LoggingForm({ onLogin }) {
 
       if (response.ok) {
         const token = await response.text();
-        console.log("JWT Token received:", token);
+        console.log("JWT Token received:", token); //todo: why ?
 
         localStorage.setItem("jwtToken", token);
 
-        await fetchUserDetails(userName, token);
+        await fetchUserDetails(token);
 
         setUser({
           userName: "",
@@ -62,7 +62,7 @@ function LoggingForm({ onLogin }) {
     }
   }
 
-  async function fetchUserDetails(userName, token) {
+  async function fetchUserDetails(token) {
     try {
       const response = await fetch(
         "http://localhost:8080/file-researcher/users/authentication",

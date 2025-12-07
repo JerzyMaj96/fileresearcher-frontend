@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -15,9 +15,39 @@ import "./App.css";
 import History from "../History/History";
 import ZipArchivesPage from "../ZipArchivesPage/ZipArchivesPage";
 import ZipStatistics from "../ZipStatistics/ZipStatistics";
+import { request, getAuthToken, setAuthToken } from "../api_helper";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
+  const [isCheckingToken, setIsCheckingToken] = useState(true);
+
+  useEffect(() => {
+    const token = getAuthToken();
+
+    if (token) {
+      request(
+        "GET",
+        "http://localhost:8080/file-researcher/users/authentication"
+      )
+        .then(async (response) => {
+          if (response.ok) {
+            const userData = await response.json();
+            setLoggedInUser(userData);
+          } else {
+            setLoggedInUser(null);
+            setAuthToken(null);
+          }
+        })
+        .catch(() => {
+          setLoggedInUser(null);
+        })
+        .finally(() => {
+          setIsCheckingToken(false);
+        });
+    } else {
+      setIsCheckingToken(false);
+    }
+  }, []);
 
   function handleLogin(userObject) {
     setLoggedInUser(userObject);
@@ -25,6 +55,11 @@ function App() {
 
   function handleLogout() {
     setLoggedInUser(null);
+    setAuthToken(null);
+  }
+
+  if (isCheckingToken) {
+    return <div className="loader"></div>;
   }
 
   return (

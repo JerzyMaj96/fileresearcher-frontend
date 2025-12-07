@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./History.css";
 import HistoryInput from "./HistoryInput";
+import { request } from "../api_helper";
 
 function History({ loggedInUser }) {
   const [zipArchiveId, setZipArchiveId] = useState("");
@@ -20,22 +21,9 @@ function History({ loggedInUser }) {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/file-researcher/zip-archives/history`,
-        {
-          method: "GET",
-          headers: {
-            "Content-type": "Application/json",
-            Authorization:
-              "Basic " +
-              btoa(
-                loggedInUser.credentials.username +
-                  ":" +
-                  loggedInUser.credentials.password
-              ),
-          },
-          credentials: "include",
-        }
+      const response = await request(
+        "GET",
+        `http://localhost:8080/file-researcher/zip-archives/history`
       );
 
       if (response.ok) {
@@ -57,22 +45,9 @@ function History({ loggedInUser }) {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/file-researcher/zip-archives/${zipArchiveId}/history`,
-        {
-          method: "GET",
-          headers: {
-            "Content-type": "Application/json",
-            Authorization:
-              "Basic " +
-              btoa(
-                loggedInUser.credentials.username +
-                  ":" +
-                  loggedInUser.credentials.password
-              ),
-          },
-          credentials: "include",
-        }
+      const response = await request(
+        "GET",
+        `http://localhost:8080/file-researcher/zip-archives/${zipArchiveId}/history`
       );
 
       if (response.ok) {
@@ -97,22 +72,9 @@ function History({ loggedInUser }) {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/file-researcher/zip-archives/${zipArchiveId}/history/last-recipient`,
-        {
-          method: "GET",
-          headers: {
-            "Content-type": "Application/json",
-            Authorization:
-              "Basic " +
-              btoa(
-                loggedInUser.credentials.username +
-                  ":" +
-                  loggedInUser.credentials.password
-              ),
-          },
-          credentials: "include",
-        }
+      const response = await request(
+        "GET",
+        `http://localhost:8080/file-researcher/zip-archives/${zipArchiveId}/history/last-recipient`
       );
 
       if (response.ok) {
