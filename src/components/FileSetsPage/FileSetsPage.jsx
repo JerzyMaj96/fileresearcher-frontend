@@ -3,11 +3,18 @@ import "./FileSetsPage.css";
 import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { authFetch } from "../api_helper";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
+import ProgressBar from "../ProgressBar/ProgressBar";
 
 function FileSetsPage({ loggedInUser }) {
   const [fileSets, setFileSets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [progressMessage, setProgressMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -60,19 +67,54 @@ function FileSetsPage({ loggedInUser }) {
     )
       return;
 
+    setIsProcessing(true);
+    setProgress(0);
+    setProgressMessage("Starting the sending process...");
+    setIsError(false);
+
     try {
       const response = await authFetch(
         "POST",
-        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/zip-archives/send?recipientEmail=${recipientEmail}`
+        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/zip-archives/send-progress?recipientEmail=${recipientEmail}`
       );
 
-      if (response.ok) {
-        alert("Files have been sent successfully");
-      } else {
-        alert("Failed to send files: " + (await response.text()));
+      if (!response.ok) {
+        throw new Error(await response.text());
       }
+
+      const taskId = await response.text();
+      console.log("Task ID received:", taskId);
+
+      const socket = new SockJS("http://localhost:8080/ws");
+      const stompClient = Stomp.over(socket);
+
+      stompClient.connect({}, () => {
+        stompClient.subscribe(`/topic/progress/${taskId}`, (message) => {
+          const body = JSON.parse(message.body);
+
+          setProgress(body.percent);
+          setProgressMessage(body.status);
+
+          if (body.percent === -1) {
+            setIsError(true);
+            stompClient.disconnect();
+            setTimeout(() => setIsProcessing(false), 5000); // Ukryj pasek po 5 sek
+          } else if (body.percent >= 100) {
+            stompClient.disconnect();
+            alert("Files have been sent successfully!");
+            setIsProcessing(false);
+
+            setFileSets((prev) =>
+              prev.map((s) =>
+                s.id === fileSetId ? { ...s, status: "SENT" } : s
+              )
+            );
+          }
+        });
+      });
     } catch (error) {
       alert("Something went wrong: " + error.message);
+      setIsProcessing(false);
     }
   }
 
@@ -107,6 +149,16 @@ function FileSetsPage({ loggedInUser }) {
   return (
     <div className="filesets-container">
       <h2>My Created FileSets</h2>
+      {isProcessing && (
+        <div className="progress-bar-container">
+          <h3>Sending files...</h3>
+          <ProgressBar
+            percent={progress}
+            message={progressMessage}
+            isError={isError}
+          />
+        </div>
+      )}
       {fileSets.length === 0 ? (
         <p>No file sets found</p>
       ) : (
