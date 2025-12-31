@@ -15,6 +15,7 @@ function FileSetsPage({ loggedInUser }) {
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState("");
   const [isError, setIsError] = useState(false);
+
   const stompClientRef = useRef(null);
 
   useEffect(() => {
@@ -53,7 +54,7 @@ function FileSetsPage({ loggedInUser }) {
   };
 
   async function handleDeleteFileSet(fileSetId) {
-    if (isProcessing) return;
+    if (isProcessing) return; // Blokada podczas wysyłania
     if (!window.confirm("Are you sure you want to delete this file set ?"))
       return;
 
@@ -118,17 +119,22 @@ function FileSetsPage({ loggedInUser }) {
             if (body.percent === -1) {
               setIsError(true);
               disconnectSocket();
-              setTimeout(() => setIsProcessing(false), 5000); // Ukryj pasek po 5 sek
+              setTimeout(() => setIsProcessing(false), 5000); // Ukryj pasek po 5s
             } else if (body.percent >= 100) {
+              setProgress(100);
+              setProgressMessage(body.status); // "Completed!"
               disconnectSocket();
-              alert("Files have been sent successfully!");
-              setIsProcessing(false);
+              setTimeout(() => {
+                alert("Files have been sent successfully!");
 
-              setFileSets((prev) =>
-                prev.map((s) =>
-                  s.id === fileSetId ? { ...s, status: "SENT" } : s
-                )
-              );
+                setIsProcessing(false);
+
+                setFileSets((prev) =>
+                  prev.map((s) =>
+                    s.id === fileSetId ? { ...s, status: "SENT" } : s
+                  )
+                );
+              }, 500);
             }
           });
         },
@@ -188,6 +194,7 @@ function FileSetsPage({ loggedInUser }) {
           />
         </div>
       )}
+
       {fileSets.length === 0 ? (
         <p>No file sets found</p>
       ) : (
@@ -260,13 +267,24 @@ function FileSetsPage({ loggedInUser }) {
                   })}
                 </td>
                 <td className="action-cell-delete">
-                  <DeleteIcon onClick={() => handleDeleteFileSet(set.id)} />
+                  <DeleteIcon
+                    onClick={() => handleDeleteFileSet(set.id)}
+                    style={{
+                      cursor: isProcessing ? "not-allowed" : "pointer",
+                      opacity: isProcessing ? 0.3 : 1,
+                    }}
+                  />
                 </td>
                 <td className="action-cell-send">
                   <SendIcon
                     onClick={() =>
                       handleSendFileZip(set.id, set.recipientEmail)
                     }
+                    style={{
+                      cursor: isProcessing ? "not-allowed" : "pointer",
+                      opacity: isProcessing ? 0.3 : 1,
+                      color: isProcessing ? "grey" : "",
+                    }}
                   />
                 </td>
               </tr>
