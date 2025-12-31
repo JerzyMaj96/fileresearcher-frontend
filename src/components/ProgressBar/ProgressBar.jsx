@@ -1,43 +1,24 @@
 import React from "react";
+import "./ProgressBar.css";
 
 function ProgressBar({ percent, message, isError }) {
-  const containerStyle = {
-    height: "20px",
-    width: "100%",
-    backgroundColor: "#e0e0de",
-    borderRadius: "50px",
-    margin: "10px 0",
-    overflow: "hidden",
-  };
-
-  const fillerStyle = {
-    height: "100%",
-    width: `${Math.max(0, percent || 0)}%`,
-    backgroundColor: isError
-      ? "#ff4d4f"
-      : percent >= 100
-      ? "#4caf50"
-      : "#2196f3",
-    borderRadius: "inherit",
-    textAlign: "right",
-    transition: "width 0.5s ease-in-out",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-  };
-
-  const labelStyle = {
-    padding: "5px",
-    color: "white",
-    fontWeight: "bold",
-    fontSize: "12px",
+  const getBackgroundColor = () => {
+    if (isError) return "#ff4d4f";
+    if (percent >= 100) return "#4caf50";
+    return "#2196f3";
   };
 
   return (
     <div style={{ marginTop: "20px" }}>
-      <div style={containerStyle}>
-        <div style={fillerStyle}>
-          <span style={labelStyle}>{`${percent}%`}</span>
+      <div className="progress-container">
+        <div
+          className="progress-fill"
+          style={{
+            width: `${Math.max(0, percent || 0)}%`,
+            backgroundColor: getBackgroundColor(),
+          }}
+        >
+          <span className="progress-label">{`${percent}%`}</span>
         </div>
       </div>
       <p style={{ fontSize: "14px", color: "#666" }}>{message}</p>
