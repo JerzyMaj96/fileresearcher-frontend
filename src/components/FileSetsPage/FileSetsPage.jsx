@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./FileSetsPage.css";
 import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -15,6 +15,13 @@ function FileSetsPage({ loggedInUser }) {
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState("");
   const [isError, setIsError] = useState(false);
+  const stompClientRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      disconnectSocket();
+    };
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -38,7 +45,15 @@ function FileSetsPage({ loggedInUser }) {
     })();
   }, [loggedInUser]);
 
+  const disconnectSocket = () => {
+    if (stompClientRef.current) {
+      stompClientRef.current.disconnect();
+      stompClientRef.current = null;
+    }
+  };
+
   async function handleDeleteFileSet(fileSetId) {
+    if (isProcessing) return;
     if (!window.confirm("Are you sure you want to delete this file set ?"))
       return;
 
@@ -60,6 +75,7 @@ function FileSetsPage({ loggedInUser }) {
   }
 
   async function handleSendFileZip(fileSetId, recipientEmail) {
+    if (isProcessing) return;
     if (
       !window.confirm(
         `Would you like to send this file set to ${recipientEmail}?`
@@ -88,30 +104,42 @@ function FileSetsPage({ loggedInUser }) {
       const socket = new SockJS("http://localhost:8080/ws");
       const stompClient = Stomp.over(socket);
 
-      stompClient.connect({}, () => {
-        stompClient.subscribe(`/topic/progress/${taskId}`, (message) => {
-          const body = JSON.parse(message.body);
+      stompClientRef.current = stompClient;
 
-          setProgress(body.percent);
-          setProgressMessage(body.status);
+      stompClient.connect(
+        {},
+        () => {
+          stompClient.subscribe(`/topic/progress/${taskId}`, (message) => {
+            const body = JSON.parse(message.body);
 
-          if (body.percent === -1) {
-            setIsError(true);
-            stompClient.disconnect();
-            setTimeout(() => setIsProcessing(false), 5000); // Ukryj pasek po 5 sek
-          } else if (body.percent >= 100) {
-            stompClient.disconnect();
-            alert("Files have been sent successfully!");
-            setIsProcessing(false);
+            setProgress(body.percent);
+            setProgressMessage(body.status);
 
-            setFileSets((prev) =>
-              prev.map((s) =>
-                s.id === fileSetId ? { ...s, status: "SENT" } : s
-              )
-            );
-          }
-        });
-      });
+            if (body.percent === -1) {
+              setIsError(true);
+              disconnectSocket();
+              setTimeout(() => setIsProcessing(false), 5000); // Ukryj pasek po 5 sek
+            } else if (body.percent >= 100) {
+              disconnectSocket();
+              alert("Files have been sent successfully!");
+              setIsProcessing(false);
+
+              setFileSets((prev) =>
+                prev.map((s) =>
+                  s.id === fileSetId ? { ...s, status: "SENT" } : s
+                )
+              );
+            }
+          });
+        },
+        (error) => {
+          console.error("Socket connection error:", error);
+          setIsError(true);
+          setProgressMessage("Connection failed. Check server.");
+          disconnectSocket();
+          setTimeout(() => setIsProcessing(false), 3000);
+        }
+      );
     } catch (error) {
       alert("Something went wrong: " + error.message);
       setIsProcessing(false);
@@ -119,6 +147,7 @@ function FileSetsPage({ loggedInUser }) {
   }
 
   async function updateFileSet(fileSetId, field, oldValue, promptText) {
+    if (isProcessing) return;
     const newValue = window.prompt(promptText, oldValue);
     if (!newValue || newValue === oldValue) return;
 
