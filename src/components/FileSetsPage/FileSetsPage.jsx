@@ -13,7 +13,7 @@ function FileSetsPage({ loggedInUser }) {
   const [error, setError] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [progressMessage, setProgressMessage] = useState("");
+  const [progressMessage, setProgressMessage] = useState(""); 
   const [isError, setIsError] = useState(false);
 
   const stompClientRef = useRef(null);
@@ -119,7 +119,7 @@ function FileSetsPage({ loggedInUser }) {
             if (body.percent === -1) {
               setIsError(true);
               disconnectSocket();
-              setTimeout(() => setIsProcessing(false), 5000); // Ukryj pasek po 5s
+              setTimeout(() => setIsProcessing(false), 5000); // Ukryć pasek po 5s
             } else if (body.percent >= 100) {
               setProgress(100);
               setProgressMessage(body.status); // "Completed!"
