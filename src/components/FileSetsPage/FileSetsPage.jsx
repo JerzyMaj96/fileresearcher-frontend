@@ -18,7 +18,7 @@ function FileSetsPage({ loggedInUser }) {
 
   const stompClientRef = useRef(null); // Przechowuje instancję klienta STOMP w logice komponentu, zmiana nie wymaga rerenderingu
 
-  useEffect(() => {
+  useEffect(() => { // zapobiegamy wyciekowi połączenia WebSocket i efektowi echa
     return () => {
       disconnectSocket();
     };
