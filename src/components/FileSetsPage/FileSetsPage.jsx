@@ -13,7 +13,7 @@ function FileSetsPage({ loggedInUser }) {
   const [error, setError] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [progressMessage, setProgressMessage] = useState(""); 
+  const [progressMessage, setProgressMessage] = useState("");
   const [isError, setIsError] = useState(false);
 
   const stompClientRef = useRef(null);
