@@ -16,7 +16,7 @@ function FileSetsPage({ loggedInUser }) {
   const [progressMessage, setProgressMessage] = useState("");
   const [isError, setIsError] = useState(false);
 
-  const stompClientRef = useRef(null); // Przechowuje instancję klienta STOMP w logice komponentu, zmiana nie wymaga rerenderingu
+  const stompClientRef = useRef(null); // Przechowuje instancję klienta STOMP w logice komponentu
 
   useEffect(() => { // zapobiegamy wyciekowi połączenia WebSocket i efektowi echa
     return () => {
