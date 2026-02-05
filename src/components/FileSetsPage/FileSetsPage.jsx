@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./FileSetsPage.css";
 import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { authFetch } from "../api_helper";
+import { authFetch, baseUrl } from "../api_helper";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import ProgressBar from "../ProgressBar/ProgressBar";
@@ -16,9 +16,9 @@ function FileSetsPage({ loggedInUser }) {
   const [progressMessage, setProgressMessage] = useState("");
   const [isError, setIsError] = useState(false);
 
-  const stompClientRef = useRef(null); // Przechowuje instancję klienta STOMP w logice komponentu
+  const stompClientRef = useRef(null);
 
-  useEffect(() => { // zapobiegamy wyciekowi połączenia WebSocket i efektowi echa
+  useEffect(() => {
     return () => {
       disconnectSocket();
     };
@@ -29,7 +29,7 @@ function FileSetsPage({ loggedInUser }) {
       try {
         const response = await authFetch(
           "GET",
-          "http://localhost:8080/file-researcher/file-sets"
+          `${baseUrl}/file-researcher/file-sets`,
         );
 
         if (response.ok) {
@@ -54,14 +54,14 @@ function FileSetsPage({ loggedInUser }) {
   };
 
   async function handleDeleteFileSet(fileSetId) {
-    if (isProcessing) return; // Blokada podczas wysyłania
+    if (isProcessing) return;
     if (!window.confirm("Are you sure you want to delete this file set ?"))
       return;
 
     try {
       const response = await authFetch(
         "DELETE",
-        `http://localhost:8080/file-researcher/file-sets/${fileSetId}`
+        `${baseUrl}/file-researcher/file-sets/${fileSetId}`,
       );
 
       if (response.ok) {
@@ -79,7 +79,7 @@ function FileSetsPage({ loggedInUser }) {
     if (isProcessing) return;
     if (
       !window.confirm(
-        `Would you like to send this file set to ${recipientEmail}?`
+        `Would you like to send this file set to ${recipientEmail}?`,
       )
     )
       return;
@@ -92,7 +92,7 @@ function FileSetsPage({ loggedInUser }) {
     try {
       const response = await authFetch(
         "POST",
-        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/zip-archives/send-progress?recipientEmail=${recipientEmail}`
+        `${baseUrl}/file-researcher/file-sets/${fileSetId}/zip-archives/send-progress?recipientEmail=${recipientEmail}`,
       );
 
       if (!response.ok) {
@@ -102,7 +102,7 @@ function FileSetsPage({ loggedInUser }) {
       const taskId = await response.text();
       console.log("Task ID received:", taskId);
 
-      const socket = new SockJS("http://localhost:8080/ws");
+      const socket = new SockJS(`${baseUrl}/ws`);
       const stompClient = Stomp.over(socket);
 
       stompClientRef.current = stompClient;
@@ -119,10 +119,10 @@ function FileSetsPage({ loggedInUser }) {
             if (body.percent === -1) {
               setIsError(true);
               disconnectSocket();
-              setTimeout(() => setIsProcessing(false), 5000); // Ukryć pasek po 5s
+              setTimeout(() => setIsProcessing(false), 5000);
             } else if (body.percent >= 100) {
               setProgress(100);
-              setProgressMessage(body.status); // "Completed!"
+              setProgressMessage(body.status);
               disconnectSocket();
               setTimeout(() => {
                 alert("Files have been sent successfully!");
@@ -131,8 +131,8 @@ function FileSetsPage({ loggedInUser }) {
 
                 setFileSets((prev) =>
                   prev.map((s) =>
-                    s.id === fileSetId ? { ...s, status: "SENT" } : s
-                  )
+                    s.id === fileSetId ? { ...s, status: "SENT" } : s,
+                  ),
                 );
               }, 500);
             }
@@ -144,7 +144,7 @@ function FileSetsPage({ loggedInUser }) {
           setProgressMessage("Connection failed. Check server.");
           disconnectSocket();
           setTimeout(() => setIsProcessing(false), 3000);
-        }
+        },
       );
     } catch (error) {
       alert("Something went wrong: " + error.message);
@@ -160,14 +160,14 @@ function FileSetsPage({ loggedInUser }) {
     try {
       const response = await authFetch(
         "PATCH",
-        `http://localhost:8080/file-researcher/file-sets/${fileSetId}/${field}?${field}=${newValue}`
+        `${baseUrl}/file-researcher/file-sets/${fileSetId}/${field}?${field}=${newValue}`,
       );
 
       if (response.ok) {
         setFileSets((prev) =>
           prev.map((set) =>
-            set.id === fileSetId ? { ...set, [field]: newValue } : set
-          )
+            set.id === fileSetId ? { ...set, [field]: newValue } : set,
+          ),
         );
         alert(`${field} updated successfully`);
       } else {
@@ -221,7 +221,7 @@ function FileSetsPage({ loggedInUser }) {
                       set.id,
                       "name",
                       set.name,
-                      "Enter new FileSet name"
+                      "Enter new FileSet name",
                     )
                   }
                   style={{ cursor: "pointer" }}
@@ -234,7 +234,7 @@ function FileSetsPage({ loggedInUser }) {
                       set.id,
                       "description",
                       set.description,
-                      "Enter new FileSet description"
+                      "Enter new FileSet description",
                     )
                   }
                   style={{ cursor: "pointer" }}
@@ -247,7 +247,7 @@ function FileSetsPage({ loggedInUser }) {
                       set.id,
                       "recipientEmail",
                       set.recipientEmail,
-                      "Enter new recipient email"
+                      "Enter new recipient email",
                     )
                   }
                   style={{ cursor: "pointer" }}
