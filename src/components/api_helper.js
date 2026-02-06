@@ -29,4 +29,4 @@ export const authFetch = (method, url, body) => {
   return fetch(url, options);
 };
 
-export const baseUrl = import.meta.env.REACT_APP_API_BASE_URL;
+export const baseUrl = import.meta.env.VITE_API_BASE_URL;

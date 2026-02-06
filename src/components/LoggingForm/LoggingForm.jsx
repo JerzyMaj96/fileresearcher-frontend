@@ -41,7 +41,7 @@ function LoggingForm({ onLogin }) {
 
       if (response.ok) {
         const token = await response.text();
-        console.log("JWT Token received:", token); //todo: why ?
+        console.log("JWT Token received:", token);
 
         localStorage.setItem("jwtToken", token);
 
