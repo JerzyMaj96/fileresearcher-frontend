@@ -1,25 +1,22 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import HomeFilledIcon from "@mui/icons-material/HomeFilled";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./Header.css";
-import { authFetch, baseUrl } from "../api_helper";
+import { authFetch, baseUrl } from "../../api/api_helper";
+import { useAuth } from "../../hooks/useAuth"; 
 
-function Header({ loggedInUser, onLogout }) {
+function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, logout } = useAuth(); 
 
-  const toggleMenu = () => {
-    setMenuOpen((prev) => !prev);
-  };
-
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
+  const closeMenu = () => setMenuOpen(false);
 
   const handleDeleteUser = async () => {
     if (!window.confirm(`Would you like to delete your account?`)) {
-      return closeMenu(false);
+      return closeMenu();
     }
 
     try {
@@ -30,39 +27,35 @@ function Header({ loggedInUser, onLogout }) {
 
       if (response.ok) {
         alert("Account deleted successfully");
-        onLogout();
+        logout(); 
       } else {
-        alert("Failed to delete your user account");
+        alert("Failed to delete account");
       }
     } catch (error) {
-      alert("Something went wrong: " + error.message);
+      alert("Error: " + error.message);
     }
-  }
+  };
 
   return (
     <header>
-      <HomeFilledIcon />
-      <h1>File Researcher App</h1>
-      {loggedInUser && (
+      <div className="header-left">
+        <HomeFilledIcon />
+        <h1>File Researcher App</h1>
+      </div>
+      
+      {user && (
         <div className="header-user">
           <div className="user-box" onClick={toggleMenu}>
             <AccountCircleIcon className="avatar-icon" />
-            <p className="user-name">Hello, {loggedInUser.name}!</p>
+            <p className="user-name">Hello, {user.name}!</p>
           </div>
           {menuOpen && (
             <div className="user-menu">
-              <button
-                onClick={() => {
-                  onLogout();
-                  closeMenu();
-                }}
-              >
-                <LogoutIcon className="logout-icon" titleAccess="Log out" />
-                Log out
+              <button onClick={() => { logout(); closeMenu(); }}>
+                <LogoutIcon className="logout-icon" /> Log out
               </button>
-              <button onClick={handleDeleteUser}>
-                <DeleteIcon />
-                Delete account
+              <button onClick={handleDeleteUser} className="delete-btn">
+                <DeleteIcon /> Delete account
               </button>
             </div>
           )}

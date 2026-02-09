@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./CreateAccountForm.css";
 import { Link, useNavigate } from "react-router-dom";
-import { baseUrl } from "../api_helper";
+import { authService } from "../../api/services";
 
 function CreateAccountForm() {
   const [user, setUser] = useState({
@@ -26,35 +26,18 @@ function CreateAccountForm() {
     };
 
     try {
-      const response = await fetch(
-        `${baseUrl}/file-researcher/users`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newUser),
-        }
-      );
+      const data = await authService.register(newUser);
 
-      if (response.ok) {
-        const data = await response.json();
-        alert(
-          "Your user account has been successfully created! Your ID is: " +
-            data.id
-        );
-        setUser({
-          userName: "",
-          userEmail: "",
-          userPassword: "",
-        });
-        navigate("/login");
-      } else {
-        const errorMessage = await response.text();
-        alert("Error: " + errorMessage);
-      }
+      alert(
+        "Your user account has been successfully created! Your ID is: " +
+          data.id,
+      );
+      setUser({ userName: "", userEmail: "", userPassword: "" });
+      navigate("/login");
     } catch (error) {
-      alert("Something went wrong: " + error.message);
+      alert("Error: " + error.message);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleUser} className="form-container">

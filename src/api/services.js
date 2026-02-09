@@ -15,6 +15,15 @@ export const authService = {
     const response = await authFetch("GET", `${baseUrl}/file-researcher/users/authentication`);
     if (!response.ok) throw new Error("Failed to get user");
     return response.json();
+  },
+  register: async (userData) => {
+    const response = await fetch(`${baseUrl}/file-researcher/users`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData),
+    });
+    if (!response.ok) throw new Error(await response.text());
+    return response.json();
   }
 };
 

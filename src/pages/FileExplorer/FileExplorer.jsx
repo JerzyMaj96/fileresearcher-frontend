@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import "./FileExplorer.css";
 import FileNode from "./FileNode";
 import PathInput from "./PathInput";
-import { authFetch, baseUrl } from "../api_helper";
+import { authFetch, baseUrl } from "../../api/api_helper";
+import { useAuth } from "../../hooks/useAuth";
 
-function FileExplorer({ loggedInUser }) {
+function FileExplorer() {
+  const { user } = useAuth();
   const [path, setPath] = useState("");
   const [filter, setFilter] = useState("");
   const [files, setFiles] = useState(null);
@@ -17,11 +19,11 @@ function FileExplorer({ loggedInUser }) {
 
   const handlePathChange = (event) => {
     setPath(event.target.value);
-  }
+  };
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
-  }
+  };
 
   const handleScan = async () => {
     if (loading) return;
@@ -45,7 +47,7 @@ function FileExplorer({ loggedInUser }) {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const handleFilteredScan = async () => {
     if (loading) return;
@@ -76,7 +78,7 @@ function FileExplorer({ loggedInUser }) {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const getAllChildPaths = (node) => {
     let paths = [];
@@ -89,7 +91,7 @@ function FileExplorer({ loggedInUser }) {
       });
     }
     return paths;
-  }
+  };
 
   const toggleSelect = (node) => {
     const isSelected = selectedPaths.includes(node.path);
@@ -102,7 +104,7 @@ function FileExplorer({ loggedInUser }) {
     } else {
       setSelectedPaths((prev) => [...prev, node.path, ...childPaths]);
     }
-  }
+  };
 
   const handleCreateFileSet = async () => {
     if (!name.trim() || !recipientEmail.trim() || selectedPaths.length === 0) {
@@ -115,7 +117,7 @@ function FileExplorer({ loggedInUser }) {
     try {
       const response = await authFetch(
         "POST",
-        "http://localhost:8080/file-researcher/file-sets",
+        `${baseUrl}/file-researcher/file-sets`,
         {
           name,
           description,
@@ -135,12 +137,12 @@ function FileExplorer({ loggedInUser }) {
     } catch (error) {
       alert("Something went wrong: " + error.message);
     }
-  }
+  };
 
   return (
     <div className="file-explorer">
-      <h2>Welcome, {loggedInUser.name}!</h2>
-      <p>Your user ID is: {loggedInUser.id}</p>
+      <h2>Welcome, {user?.name}!</h2>
+      <p>Your user ID is: {user?.id}</p>
 
       <PathInput
         path={path}

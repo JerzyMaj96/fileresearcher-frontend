@@ -7,7 +7,7 @@ import {
   FaFileAlt,
   FaFileImage,
 } from "react-icons/fa";
-import { formatSize } from "../utils";
+import { formatSize } from "../../components/utils";
 
 function FileNode({ node, toggleSelect, selectedPaths }) {
   const [expanded, setExpanded] = useState(false);
@@ -31,7 +31,7 @@ function FileNode({ node, toggleSelect, selectedPaths }) {
     if (["jpg", "jpeg", "png"].includes(ext))
       return <FaFileImage color="green" />;
     return <FaFileAlt color="gray" />;
-  }
+  };
 
   const calculateDirectorySize = (node) => {
     if (!node.directory) {
@@ -41,9 +41,9 @@ function FileNode({ node, toggleSelect, selectedPaths }) {
 
     return node.children.reduce(
       (total, child) => total + calculateDirectorySize(child),
-      0
+      0,
     );
-  }
+  };
 
   return (
     <div className="file-node">
@@ -69,7 +69,7 @@ function FileNode({ node, toggleSelect, selectedPaths }) {
           {isDirectory ? "Directory" : "File"}{" "}
           {node.size != null || isDirectory
             ? `| ${formatSize(
-                isDirectory ? calculateDirectorySize(node) : node.size
+                isDirectory ? calculateDirectorySize(node) : node.size,
               )}`
             : ""}
         </span>

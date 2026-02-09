@@ -4,18 +4,18 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { AuthProvider } from "./context/AuthProvider";
-import { useAuth } from "./hooks/useAuth";
+import { AuthProvider } from "../context/AuthProvider";
+import { useAuth } from "../hooks/useAuth";
 
-import Header from "./components/Header/Header";
-import Sidebar from "./components/Sidebar/Sidebar";
-import LoggingForm from "./components/LoggingForm/LoggingForm";
-import CreateAccountForm from "./components/CreateAccountForm/CreateAccountForm";
-import FileExplorer from "./components/FileExplorer/FileExplorer";
-import FileSetsPage from "./components/FileSetsPage/FileSetsPage";
-import ZipArchivesPage from "./components/ZipArchivesPage/ZipArchivesPage";
-import History from "./components/History/History";
-import ZipStatistics from "./components/ZipStatistics/ZipStatistics";
+import Header from "../components/Header/Header";
+import Sidebar from "../components/Sidebar/Sidebar";
+import LoggingForm from "../pages/LoggingForm/LoggingForm";
+import CreateAccountForm from "../components/CreateAccountForm/CreateAccountForm";
+import FileExplorer from "../pages/FileExplorer/FileExplorer";
+import FileSetsPage from "../pages/FileSetsPage/FileSetsPage";
+import ZipArchivesPage from "../pages/ZipArchivesPage/ZipArchivesPage";
+import History from "../pages/History/History";
+import ZipStatistics from "../pages/ZipStatistics/ZipStatistics";
 import "./App.css";
 
 const ProtectedRoute = ({ children }) => {

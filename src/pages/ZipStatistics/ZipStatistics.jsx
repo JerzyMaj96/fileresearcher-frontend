@@ -1,73 +1,51 @@
 import { useEffect, useState } from "react";
 import "./ZipStatistics.css";
 import ZipStatisticsInput from "./ZipStatisticsInput";
-import { authFetch, baseUrl } from "../api_helper";
-import { formatSize } from "../utils";
+import { zipService } from "../../api/services";
+import { useAuth } from "../../hooks/useAuth";
+import { formatSize } from "../../components/utils";
 
-function ZipStatistics({ loggedInUser }) {
+function ZipStatistics() {
+  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [largeZips, setLargeZips] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    if (loggedInUser) {
-      loadStats();
-      loadLargeZips();
+    if (user) {
+      fetchData();
     }
-  }, [loggedInUser]);
+  }, [user]);
 
-  const loadStats = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await authFetch(
-        "GET",
-        `${baseUrl}/file-researcher/zip-archives/stats`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setStats(data);
-      } else {
-        alert("Failed to fetch statistics");
-      }
+      const [statsData, largeData] = await Promise.all([
+        zipService.getStats(),
+        zipService.getLargeArchives(0),
+      ]);
+
+      setStats(statsData);
+      setLargeZips(largeData);
     } catch (error) {
-      alert("Error: " + error.message);
+      alert("Error loading statistics: " + error.message);
     } finally {
       setLoading(false);
     }
-  }
-
-  const minLargeSize = 0; //POSSIBLE TO CHANGE TO 1024 * 1024 * 1024 = 1GB
-
-  const loadLargeZips = async () => {
-    try {
-      const response = await authFetch(
-        "GET",
-        `${baseUrl}/file-researcher/zip-archives/large?minSize=${minLargeSize}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setLargeZips(data);
-      } else {
-        alert("Failed to fetch large zip archives");
-      }
-    } catch (error) {
-      alert("Error: " + error.message);
-    }
-  }
+  };
 
   const filteredZips = largeZips.filter(
     (zip) =>
       zip.recipientEmail?.toLowerCase().includes(filter.toLowerCase()) ||
-      zip.status?.toLowerCase().includes(filter.toLowerCase())
+      zip.status?.toLowerCase().includes(filter.toLowerCase()),
   );
 
   return (
     <div>
       <div className="zip-stats">
         <h2>Zip Statistics</h2>
-
-        <ZipStatisticsInput onRefresh={loadStats} onFilterChange={setFilter} />
+        <ZipStatisticsInput onRefresh={fetchData} onFilterChange={setFilter} />
 
         {loading && <div className="loader"></div>}
 
@@ -81,7 +59,7 @@ function ZipStatistics({ loggedInUser }) {
             </div>
             {stats.totalSize && (
               <div className="stat-card">
-                📦 Total size: {stats.totalSize} bytes
+                📦 Total size: {formatSize(stats.totalSize)}
               </div>
             )}
           </div>
@@ -94,9 +72,9 @@ function ZipStatistics({ loggedInUser }) {
           <table>
             <thead>
               <tr>
-                <th>Zip Archive ID</th>
+                <th>ID</th>
                 <th>Archive Name</th>
-                <th>Size (MB)</th>
+                <th>Size</th>
                 <th>Status</th>
                 <th>Recipient</th>
                 <th>Date</th>

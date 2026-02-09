@@ -1,95 +1,48 @@
 import { useEffect, useState } from "react";
 import "./History.css";
 import HistoryInput from "./HistoryInput";
-import { authFetch, baseUrl } from "../api_helper";
+import { zipService } from "../../api/services";
+import { useAuth } from "../../hooks/useAuth";
 
-function History({ loggedInUser }) {
+function History() {
+  const { user } = useAuth();
   const [zipArchiveId, setZipArchiveId] = useState("");
   const [sentHistory, setSentHistory] = useState([]);
   const [lastRecipient, setLastRecipient] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    loadSentHistoryForUser();
-  }, [loggedInUser]);
+    if (user) {
+      loadSentHistoryForUser();
+    }
+  }, [user]);
 
-  const handleChange = (event) => {
-    setZipArchiveId(event.target.value);
-  }
+  const handleChange = (event) => setZipArchiveId(event.target.value);
 
   const loadSentHistoryForUser = async () => {
     setLoading(true);
-
     try {
-      const response = await authFetch(
-        "GET",
-        `${baseUrl}/file-researcher/zip-archives/history`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setSentHistory(data);
-        setLoading(false);
-      } else {
-        alert("Failed to fetch sent history");
-        setLoading(false);
-      }
+      const data = await zipService.getHistory(zipArchiveId || null);
+      setSentHistory(data);
     } catch (error) {
-      alert("Something went wrong" + error.message);
+      alert("Error: " + error.message);
+    } finally {
       setLoading(false);
     }
-  }
-
-  const loadSentHistoryForZipArchive = async () => {
-    if (loading) return;
-    setLoading(true);
-
-    try {
-      const response = await authFetch(
-        "GET",
-        `${baseUrl}/file-researcher/zip-archives/${zipArchiveId}/history`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setSentHistory(data);
-        setLoading(false);
-      } else {
-        alert(
-          "Failed to fetch sent history of a ZipArchive with ID: " +
-            zipArchiveId
-        );
-        setLoading(false);
-      }
-    } catch (error) {
-      alert("Something went wrong" + error.message);
-      setLoading(false);
-    }
-  }
+  };
 
   const displayLastRecipient = async () => {
-    if (loading) return;
+    if (!zipArchiveId) return;
     setLoading(true);
-
     try {
-      const response = await authFetch(
-        "GET",
-        `${baseUrl}/file-researcher/zip-archives/${zipArchiveId}/history/last-recipient`
-      );
-
-      if (response.ok) {
-        const data = await response.text();
-        setLastRecipient(data);
-        setLoading(false);
-      } else {
-        alert("Failed to fetch the last recipient");
-        setLoading(false);
-      }
+      const data = await zipService.getLastRecipient(zipArchiveId);
+      setLastRecipient(data);
     } catch (error) {
-      alert("Something went wrong" + error.message);
+      alert("Error: " + error.message);
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="history-explorer">
@@ -97,7 +50,7 @@ function History({ loggedInUser }) {
       <HistoryInput
         zipArchiveId={zipArchiveId}
         lastRecipient={lastRecipient}
-        onLoad={loadSentHistoryForZipArchive}
+        onLoad={loadSentHistoryForUser}
         onGetLastRecipient={displayLastRecipient}
         onZipArchiveIdChange={handleChange}
       />
@@ -137,9 +90,7 @@ function History({ loggedInUser }) {
         </table>
       )}
 
-      {!loading && sentHistory.length === 0 && zipArchiveId && (
-        <p>No history found for archive ID: {zipArchiveId}</p>
-      )}
+      {!loading && sentHistory.length === 0 && <p>No history found.</p>}
     </div>
   );
 }

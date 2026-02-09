@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import "./ZipArchivesPage.css";
 import ZipArchivesInput from "./ZipArchivesInput";
 import { FaFileArchive } from "react-icons/fa";
-import { authFetch, baseUrl } from "../api_helper";
-import { formatSize } from "../utils";
+import { zipService } from "../../api/services"; 
+import { useAuth } from "../../hooks/useAuth"; 
+import { formatSize } from "../../components/utils";
 
-function ZipArchivesPage({ loggedInUser }) {
+function ZipArchivesPage() {
+  const { user } = useAuth();
   const [fileSetId, setFileSetId] = useState("");
   const [zipArchives, setZipArchives] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,62 +17,41 @@ function ZipArchivesPage({ loggedInUser }) {
   }
 
   useEffect(() => {
-    loadZipArchivesForUser();
-  }, [loggedInUser]);
+    if (user) loadAllArchives();
+  }, [user]);
 
-  const loadZipArchivesForUser = async () => {
+  const loadAllArchives = async () => {
     setLoading(true);
-
     try {
-      const response = await authFetch(
-        "GET",
-        `${baseUrl}/file-researcher/zip-archives`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setZipArchives(data);
-        setLoading(false);
-      } else {
-        alert("Failed to fetch sent Zip archives ");
-        setLoading(false);
-      }
+      const data = await zipService.getAll();
+      setZipArchives(data);
     } catch (error) {
-      alert("Something went wrong" + error.message);
+      alert("Error: " + error.message);
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
-  const loadZipArchivesForFileSet = async (fileSetId) => {
-    if (loading) return;
+  const loadArchivesForFileSet = async () => {
+    if (!fileSetId) return loadAllArchives();
+
     setLoading(true);
-
     try {
-      const response = await authFetch(
-        "GET",
-        `${baseUrl}/file-researcher/file-sets/${fileSetId}/zip-archives`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setZipArchives(data);
-        setLoading(false);
-      } else {
-        alert("Failed to fetch sent Zip archives ");
-        setLoading(false);
-      }
+      const data = await zipService.getByFileSet(fileSetId);
+      setZipArchives(data);
     } catch (error) {
-      alert("Something went wrong" + error.message);
+      alert("Error: " + error.message);
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="ziparchives-explorer">
       <h2>Zip Archive Researcher</h2>
       <ZipArchivesInput
         zipArchiveId={fileSetId}
-        onLoad={() => loadZipArchivesForFileSet(fileSetId)}
+        onLoad={loadArchivesForFileSet}
         onFileSetIdChange={handleChange}
       />
 
