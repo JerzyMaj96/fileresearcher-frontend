@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./ZipStatistics.css";
 import ZipStatisticsInput from "./ZipStatisticsInput";
-import { authFetch } from "../api_helper";
+import { authFetch, baseUrl } from "../api_helper";
 import { formatSize } from "../utils";
 
 function ZipStatistics({ loggedInUser }) {
@@ -17,12 +17,12 @@ function ZipStatistics({ loggedInUser }) {
     }
   }, [loggedInUser]);
 
-  async function loadStats() {
+  const loadStats = async () => {
     setLoading(true);
     try {
       const response = await authFetch(
         "GET",
-        "http://localhost:8080/file-researcher/zip-archives/stats"
+        `${baseUrl}/file-researcher/zip-archives/stats`
       );
       if (response.ok) {
         const data = await response.json();
@@ -39,11 +39,11 @@ function ZipStatistics({ loggedInUser }) {
 
   const minLargeSize = 0; //POSSIBLE TO CHANGE TO 1024 * 1024 * 1024 = 1GB
 
-  async function loadLargeZips() {
+  const loadLargeZips = async () => {
     try {
       const response = await authFetch(
         "GET",
-        `http://localhost:8080/file-researcher/zip-archives/large?minSize=${minLargeSize}`
+        `${baseUrl}/file-researcher/zip-archives/large?minSize=${minLargeSize}`
       );
       if (response.ok) {
         const data = await response.json();

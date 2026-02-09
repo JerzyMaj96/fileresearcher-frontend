@@ -53,7 +53,7 @@ function FileSetsPage({ loggedInUser }) {
     }
   };
 
-  async function handleDeleteFileSet(fileSetId) {
+  const handleDeleteFileSet = async (fileSetId) => {
     if (isProcessing) return;
     if (!window.confirm("Are you sure you want to delete this file set ?"))
       return;
@@ -75,7 +75,7 @@ function FileSetsPage({ loggedInUser }) {
     }
   }
 
-  async function handleSendFileZip(fileSetId, recipientEmail) {
+  const handleSendFileZip = async (fileSetId, recipientEmail) => {
     if (isProcessing) return;
     if (
       !window.confirm(

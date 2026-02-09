@@ -15,7 +15,7 @@ import "./App.css";
 import History from "../History/History";
 import ZipArchivesPage from "../ZipArchivesPage/ZipArchivesPage";
 import ZipStatistics from "../ZipStatistics/ZipStatistics";
-import { authFetch, getAuthToken, setAuthToken } from "../api_helper";
+import { authFetch, baseUrl, getAuthToken, setAuthToken } from "../api_helper";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -27,7 +27,7 @@ function App() {
     if (token) {
       authFetch(
         "GET",
-        "http://localhost:8080/file-researcher/users/authentication"
+        `${baseUrl}/file-researcher/users/authentication`
       )
         .then(async (response) => {
           if (response.ok) {
@@ -49,11 +49,11 @@ function App() {
     }
   }, []);
 
-  function handleLogin(userObject) {
+  const handleLogin = (userObject) => {
     setLoggedInUser(userObject);
   }
 
-  function handleLogout() {
+  const handleLogout = () => {
     setLoggedInUser(null);
     setAuthToken(null);
   }

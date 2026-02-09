@@ -4,7 +4,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./Header.css";
-import { authFetch } from "../api_helper";
+import { authFetch, baseUrl } from "../api_helper";
 
 function Header({ loggedInUser, onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -17,7 +17,7 @@ function Header({ loggedInUser, onLogout }) {
     setMenuOpen(false);
   };
 
-  async function handleDeleteUser() {
+  const handleDeleteUser = async () => {
     if (!window.confirm(`Would you like to delete your account?`)) {
       return closeMenu(false);
     }
@@ -25,7 +25,7 @@ function Header({ loggedInUser, onLogout }) {
     try {
       const response = await authFetch(
         "DELETE",
-        "http://localhost:8080/file-researcher/users/delete-me"
+        `${baseUrl}/file-researcher/users/delete-me`
       );
 
       if (response.ok) {

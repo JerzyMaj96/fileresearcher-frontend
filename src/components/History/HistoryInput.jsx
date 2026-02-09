@@ -7,7 +7,7 @@ function HistoryInput({
   onGetLastRecipient,
   lastRecipient,
 }) {
-  function handleKeyDown(event) {
+  const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
       onLoad();

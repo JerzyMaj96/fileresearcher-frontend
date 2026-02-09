@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./History.css";
 import HistoryInput from "./HistoryInput";
-import { authFetch } from "../api_helper";
+import { authFetch, baseUrl } from "../api_helper";
 
 function History({ loggedInUser }) {
   const [zipArchiveId, setZipArchiveId] = useState("");
@@ -13,17 +13,17 @@ function History({ loggedInUser }) {
     loadSentHistoryForUser();
   }, [loggedInUser]);
 
-  function handleChange(event) {
+  const handleChange = (event) => {
     setZipArchiveId(event.target.value);
   }
 
-  async function loadSentHistoryForUser() {
+  const loadSentHistoryForUser = async () => {
     setLoading(true);
 
     try {
       const response = await authFetch(
         "GET",
-        `http://localhost:8080/file-researcher/zip-archives/history`
+        `${baseUrl}/file-researcher/zip-archives/history`
       );
 
       if (response.ok) {
@@ -40,14 +40,14 @@ function History({ loggedInUser }) {
     }
   }
 
-  async function loadSentHistoryForZipArchive() {
+  const loadSentHistoryForZipArchive = async () => {
     if (loading) return;
     setLoading(true);
 
     try {
       const response = await authFetch(
         "GET",
-        `http://localhost:8080/file-researcher/zip-archives/${zipArchiveId}/history`
+        `${baseUrl}/file-researcher/zip-archives/${zipArchiveId}/history`
       );
 
       if (response.ok) {
@@ -67,14 +67,14 @@ function History({ loggedInUser }) {
     }
   }
 
-  async function displayLastRecipient() {
+  const displayLastRecipient = async () => {
     if (loading) return;
     setLoading(true);
 
     try {
       const response = await authFetch(
         "GET",
-        `http://localhost:8080/file-researcher/zip-archives/${zipArchiveId}/history/last-recipient`
+        `${baseUrl}/file-researcher/zip-archives/${zipArchiveId}/history/last-recipient`
       );
 
       if (response.ok) {

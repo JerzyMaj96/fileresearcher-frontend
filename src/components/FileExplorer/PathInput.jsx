@@ -9,17 +9,17 @@ function PathInput({
   onScan,
   onFilterByExtension,
 }) {
-  function handlePathKeyDown(event) {
+  const handlePathKeyDown = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
       onScan();
     }
   }
 
-  function handleFilterKeyDown(event) {
+  const handleFilterKeyDown = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      onScan();
+      onFilterByExtension();
     }
   }
 

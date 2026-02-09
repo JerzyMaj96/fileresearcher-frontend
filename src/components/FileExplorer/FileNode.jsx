@@ -7,6 +7,7 @@ import {
   FaFileAlt,
   FaFileImage,
 } from "react-icons/fa";
+import { formatSize } from "../utils";
 
 function FileNode({ node, toggleSelect, selectedPaths }) {
   const [expanded, setExpanded] = useState(false);
@@ -16,7 +17,7 @@ function FileNode({ node, toggleSelect, selectedPaths }) {
     setExpanded(!expanded);
   };
 
-  function getIcon(filename, isDirectory, expanded) {
+  const getIcon = (filename, isDirectory, expanded) => {
     if (isDirectory) {
       return expanded ? (
         <FaFolderOpen color="orange" />
@@ -32,15 +33,7 @@ function FileNode({ node, toggleSelect, selectedPaths }) {
     return <FaFileAlt color="gray" />;
   }
 
-  function formatSize(bytes) {
-    if (bytes === 0) return "0 B";
-    const sizes = ["B", "KB", "MB", "GB", "TB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    const value = bytes / Math.pow(1024, i);
-    return `${value.toFixed(2)} ${sizes[i]}`;
-  }
-
-  function calculateDirectorySize(node) {
+  const calculateDirectorySize = (node) => {
     if (!node.directory) {
       return node.size || 0;
     }

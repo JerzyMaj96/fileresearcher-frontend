@@ -3,14 +3,14 @@ import React, { useState } from "react";
 function ZipStatisticsInput({ onRefresh, onFilterChange }) {
   const [filter, setFilter] = useState("");
 
-  function handleKeyDown(event) {
+  const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
       onRefresh();
     }
   }
 
-  function handleChange(e) {
+  const handleChange = (e) => {
     setFilter(e.target.value);
     if (onFilterChange) {
       onFilterChange(e.target.value);

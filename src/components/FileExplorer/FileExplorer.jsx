@@ -15,15 +15,15 @@ function FileExplorer({ loggedInUser }) {
   const [recipientEmail, setRecipientEmail] = useState("");
   const [fileSetIsCreated, setFileSetIsCreated] = useState(false);
 
-  function handlePathChange(event) {
+  const handlePathChange = (event) => {
     setPath(event.target.value);
   }
 
-  function handleFilterChange(event) {
+  const handleFilterChange = (event) => {
     setFilter(event.target.value);
   }
 
-  async function handleScan() {
+  const handleScan = async () => {
     if (loading) return;
     setLoading(true);
 
@@ -47,7 +47,7 @@ function FileExplorer({ loggedInUser }) {
     }
   }
 
-  async function handleFilteredScan() {
+  const handleFilteredScan = async () => {
     if (loading) return;
 
     if (!filter || filter.trim() === "") {
@@ -78,7 +78,7 @@ function FileExplorer({ loggedInUser }) {
     }
   }
 
-  function getAllChildPaths(node) {
+  const getAllChildPaths = (node) => {
     let paths = [];
     if (node.directory && node.children?.length) {
       node.children.forEach((child) => {
@@ -91,7 +91,7 @@ function FileExplorer({ loggedInUser }) {
     return paths;
   }
 
-  function toggleSelect(node) {
+  const toggleSelect = (node) => {
     const isSelected = selectedPaths.includes(node.path);
     const childPaths = getAllChildPaths(node);
 
@@ -104,7 +104,7 @@ function FileExplorer({ loggedInUser }) {
     }
   }
 
-  async function handleCreateFileSet() {
+  const handleCreateFileSet = async () => {
     if (!name.trim() || !recipientEmail.trim() || selectedPaths.length === 0) {
       alert(
         "Name, recipient email and at least one selected path are required.",

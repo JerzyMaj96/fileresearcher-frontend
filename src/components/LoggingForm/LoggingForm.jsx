@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./LoggingForm.css";
 import { Link, useNavigate } from "react-router-dom";
+import { baseUrl } from "../api_helper";
 
 function LoggingForm({ onLogin }) {
   const [user, setUser] = useState({
@@ -9,12 +10,12 @@ function LoggingForm({ onLogin }) {
   });
   const navigate = useNavigate();
 
-  function handleChange(event) {
+  const handleChange = (event) => {
     const { value, name } = event.target;
     setUser((prevValue) => ({ ...prevValue, [name]: value }));
   }
 
-  async function handleLogin(event) {
+  const handleLogin = async (event) => {
     event.preventDefault();
 
     const { userName, userPassword } = user;
@@ -26,7 +27,7 @@ function LoggingForm({ onLogin }) {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/file-researcher/auth/login",
+        `${baseUrl}/file-researcher/auth/login`,
         {
           method: "POST",
           headers: {
@@ -62,10 +63,10 @@ function LoggingForm({ onLogin }) {
     }
   }
 
-  async function fetchUserDetails(token) {
+  const fetchUserDetails = async (token) => {
     try {
       const response = await fetch(
-        "http://localhost:8080/file-researcher/users/authentication",
+        `${baseUrl}/file-researcher/users/authentication`,
         {
           method: "GET",
           headers: {

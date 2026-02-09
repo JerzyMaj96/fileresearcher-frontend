@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./CreateAccountForm.css";
 import { Link, useNavigate } from "react-router-dom";
+import { baseUrl } from "../api_helper";
 
 function CreateAccountForm() {
   const [user, setUser] = useState({
@@ -10,12 +11,12 @@ function CreateAccountForm() {
   });
   const navigate = useNavigate();
 
-  function handleChange(event) {
+  const handleChange = (event) => {
     const { value, name } = event.target;
     setUser((prevValue) => ({ ...prevValue, [name]: value }));
-  }
+  };
 
-  async function handleUser(event) {
+  const handleUser = async (event) => {
     event.preventDefault();
 
     const newUser = {
@@ -26,7 +27,7 @@ function CreateAccountForm() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/file-researcher/users",
+        `${baseUrl}/file-researcher/users`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
