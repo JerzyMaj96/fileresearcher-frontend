@@ -8,7 +8,6 @@ function FileExplorer({ loggedInUser }) {
   const [path, setPath] = useState("");
   const [filter, setFilter] = useState("");
   const [files, setFiles] = useState(null);
-  // const [allFiles, setAllFiles] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedPaths, setSelectedPaths] = useState([]);
   const [name, setName] = useState("");
@@ -37,7 +36,6 @@ function FileExplorer({ loggedInUser }) {
 
       if (response.ok) {
         const data = await response.json();
-        // setAllFiles(data?.children || []);
         setFiles(data?.children || []);
       } else {
         alert("Error: " + (await response.text()));
@@ -69,7 +67,6 @@ function FileExplorer({ loggedInUser }) {
       if (response.ok) {
         const text = await response.text();
         const data = text ? JSON.parse(text) : null;
-        // setAllFiles(data?.children || []);
         setFiles(data?.children || []);
       } else {
         alert("Error: " + (await response.text()));
@@ -139,37 +136,6 @@ function FileExplorer({ loggedInUser }) {
       alert("Something went wrong: " + error.message);
     }
   }
-
-  // function filterFilesByExtension(nodes, extension) {
-  //   if (!extension.trim()) return nodes;
-
-  //   return nodes
-  //     .map((node) => {
-  //       if (node.directory && node.children?.length) {
-  //         const filteredChildren = filterFilesByExtension(
-  //           node.children,
-  //           extension,
-  //         );
-  //         if (filteredChildren.length > 0) {
-  //           return { ...node, children: filteredChildren };
-  //         }
-  //       } else if (node.name?.endsWith(extension)) {
-  //         return node;
-  //       }
-  //       return null;
-  //     })
-  //     .filter(Boolean);
-  // }
-
-  // function handleFilterByExtension() {
-  //   if (!filter.trim()) {
-  //     setFiles(allFiles);
-  //     return;
-  //   }
-
-  //   const filtered = filterFilesByExtension(allFiles, filter);
-  //   setFiles(filtered);
-  // }
 
   return (
     <div className="file-explorer">
