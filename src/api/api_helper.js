@@ -1,9 +1,13 @@
 export const getAuthToken = () => {
-  return localStorage.getItem("jwtToken");
+  return sessionStorage.getItem("jwtToken");
 };
 
 export const setAuthToken = (token) => {
-  localStorage.setItem("jwtToken", token);
+  if (token) {
+    sessionStorage.setItem("jwtToken", token);
+  } else {
+    sessionStorage.removeItem("jwtToken");
+  }
 };
 
 export const authFetch = (method, url, body) => {
