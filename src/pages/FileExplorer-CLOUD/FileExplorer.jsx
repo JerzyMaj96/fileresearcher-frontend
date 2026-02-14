@@ -96,16 +96,24 @@ function FileExplorer() {
       return;
     }
 
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("recipientEmail", recipientEmail);
+
+    const filesToUpload = selectedFiles.filter((file) =>
+      selectedPaths.includes(file.webkitRelativePath || file.name),
+    );
+
+    filesToUpload.forEach((file) => {
+      formData.append("files", file);
+    });
+
     try {
       const response = await authFetch(
         "POST",
         `${baseUrl}/file-researcher/file-sets`,
-        {
-          name,
-          description,
-          recipientEmail,
-          selectedPaths,
-        },
+        formData,
       );
       if (response.ok) {
         alert("File set created successfully!");
