@@ -11,14 +11,15 @@ export const setAuthToken = (token) => {
 };
 
 export const authFetch = (method, url, body) => {
-  let headers = {
-    "Content-Type": "application/json",
-  };
-
   const token = getAuthToken();
+  const headers = {};
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  if (body && !(body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
   }
 
   const options = {
@@ -27,7 +28,7 @@ export const authFetch = (method, url, body) => {
   };
 
   if (body) {
-    options.body = JSON.stringify(body);
+    options.body = body instanceof FormData ? body : JSON.stringify(body);
   }
 
   return fetch(url, options);

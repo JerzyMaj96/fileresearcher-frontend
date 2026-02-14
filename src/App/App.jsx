@@ -11,7 +11,7 @@ import Header from "../components/Header/Header";
 import Sidebar from "../components/Sidebar/Sidebar";
 import LoggingForm from "../pages/LoggingForm/LoggingForm";
 import CreateAccountForm from "../components/CreateAccountForm/CreateAccountForm";
-import FileExplorer from "../pages/FileExplorer/FileExplorer";
+import FileExplorer from "../pages/FileExplorer-CLOUD/FileExplorer";
 import FileSetsPage from "../pages/FileSetsPage/FileSetsPage";
 import ZipArchivesPage from "../pages/ZipArchivesPage/ZipArchivesPage";
 import History from "../pages/History/History";
