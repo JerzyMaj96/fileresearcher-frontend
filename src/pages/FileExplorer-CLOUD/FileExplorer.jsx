@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./FileExplorer.css";
-import FileNode from "./WEB/FileNode";
+import FileNode from "./FileNode";
 import PathInput from "./PathInput";
 import { authFetch, baseUrl } from "../../api/api_helper";
 import { useAuth } from "../../hooks/useAuth";
@@ -26,7 +26,10 @@ function FileExplorer() {
   };
 
   const handleScan = async () => {
-    if (loading) return;
+    if (loading || selectedFiles.length === 0) {
+      alert("Please select a folder first!");
+      return;
+    }
     setLoading(true);
 
     const formData = new FormData();
