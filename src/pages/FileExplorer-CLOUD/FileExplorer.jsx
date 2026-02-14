@@ -112,7 +112,7 @@ function FileExplorer() {
     try {
       const response = await authFetch(
         "POST",
-        `${baseUrl}/file-researcher/file-sets`,
+        `${baseUrl}/file-researcher/file-sets/upload`,
         formData,
       );
       if (response.ok) {
