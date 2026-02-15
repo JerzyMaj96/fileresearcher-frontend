@@ -4,15 +4,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import "./FileSetsPage.css";
 import { fileSetService } from "../../api/services";
-import { useZipSender } from "../../hooks/useZipSender";
 
 function FileSetsPage() {
   const [fileSets, setFileSets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const { progress, statusMessage, isProcessing, isError, sendFileSet } =
-    useZipSender();
 
   useEffect(() => {
     loadFileSets();
@@ -30,7 +26,6 @@ function FileSetsPage() {
   };
 
   const handleDelete = async (id) => {
-    if (isProcessing) return;
     if (!window.confirm("Delete this file set?")) return;
     try {
       await fileSetService.delete(id);
@@ -42,7 +37,6 @@ function FileSetsPage() {
   };
 
   const handleUpdate = async (id, field, oldValue) => {
-    if (isProcessing) return;
     const newValue = window.prompt(`Enter new ${field}`, oldValue);
     if (!newValue || newValue === oldValue) return;
 
@@ -56,28 +50,12 @@ function FileSetsPage() {
     }
   };
 
-  const onSendSuccess = () => {
-    alert("Sent successfully!");
-    loadFileSets();
-  };
-
   if (loading) return <div className="loader" />;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="filesets-container">
       <h2>My Created FileSets</h2>
-      {isProcessing && (
-        <div className="progress-bar-container">
-          <h3>Sending files...</h3>
-          <ProgressBar
-            percent={progress}
-            message={statusMessage}
-            isError={isError}
-          />
-        </div>
-      )}
-
       <table className="filesets-table">
         <thead>
           <tr>
@@ -122,20 +100,8 @@ function FileSetsPage() {
                 <DeleteIcon
                   onClick={() => handleDelete(set.id)}
                   style={{
-                    cursor: isProcessing ? "not-allowed" : "pointer",
+                    cursor: "pointer",
                     color: "red",
-                  }}
-                />
-                <SendIcon
-                  onClick={() => {
-                    if (window.confirm(`Send to ${set.recipientEmail}?`)) {
-                      sendFileSet(set.id, set.recipientEmail, onSendSuccess);
-                    }
-                  }}
-                  style={{
-                    cursor: isProcessing ? "not-allowed" : "pointer",
-                    marginLeft: "10px",
-                    color: "blue",
                   }}
                 />
               </td>
