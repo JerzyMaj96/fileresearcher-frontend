@@ -22,21 +22,27 @@ export const useZipSender = () => {
     return () => disconnect();
   }, []);
 
-  const sendFileSet = async (fileSetId, recipientEmail, onSuccess) => {
+  const sendFileSet = async (fileSetId, recipientEmail, files, onSuccess) => {
     setIsProcessing(true);
     setProgress(0);
     setStatusMessage("Initializing...");
     setIsError(false);
 
     try {
-      const taskId = await fileSetService.initiateSend(fileSetId, recipientEmail);
+      const taskId = await fileSetService.initiateSend(
+        fileSetId,
+        recipientEmail,
+        files
+      );
       console.log("Task ID:", taskId);
 
       const socket = new SockJS(`${baseUrl}/ws`);
       const stompClient = Stomp.over(socket);
       stompClientRef.current = stompClient;
 
-      stompClient.connect({}, () => {
+      stompClient.connect(
+        {},
+        () => {
           stompClient.subscribe(`/topic/progress/${taskId}`, (message) => {
             const body = JSON.parse(message.body);
             setProgress(body.percent);
@@ -46,9 +52,7 @@ export const useZipSender = () => {
               setIsError(true);
               disconnect();
               setTimeout(() => setIsProcessing(false), 3000);
-            } 
-
-            else if (body.percent >= 100) {
+            } else if (body.percent >= 100) {
               disconnect();
               setTimeout(() => {
                 setIsProcessing(false);
@@ -63,7 +67,7 @@ export const useZipSender = () => {
           setStatusMessage("Connection failed.");
           disconnect();
           setIsProcessing(false);
-        }
+        },
       );
     } catch (error) {
       setIsError(true);
@@ -72,11 +76,11 @@ export const useZipSender = () => {
     }
   };
 
-  return { 
-    progress, 
-    statusMessage, 
-    isProcessing, 
-    isError, 
-    sendFileSet 
+  return {
+    progress,
+    statusMessage,
+    isProcessing,
+    isError,
+    sendFileSet,
   };
 };

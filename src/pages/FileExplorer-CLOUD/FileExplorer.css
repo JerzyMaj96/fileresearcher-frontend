@@ -171,3 +171,8 @@
   width: 250px;
   font-size: 14px;
 }
+
+.progress-bar-container {
+  max-width: 600px;
+  margin: 0 auto 20px auto;
+}

@@ -4,6 +4,8 @@ import FileNode from "./FileNode";
 import PathInput from "./PathInput";
 import { authFetch, baseUrl } from "../../api/api_helper";
 import { useAuth } from "../../hooks/useAuth";
+import { useZipSender } from "../../hooks/useZipSender";
+import ProgressBar from "../../components/ProgressBar/ProgressBar";
 
 function FileExplorer() {
   const { user } = useAuth();
@@ -16,6 +18,8 @@ function FileExplorer() {
   const [description, setDescription] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
   const [fileSetIsCreated, setFileSetIsCreated] = useState(false);
+  const { progress, statusMessage, isProcessing, isError, sendFileSet } =
+    useZipSender();
 
   const handleFileChange = (event) => {
     setSelectedFiles(Array.from(event.target.files));
@@ -116,8 +120,16 @@ function FileExplorer() {
         formData,
       );
       if (response.ok) {
-        alert("File set created successfully!");
+        const newFileSet = await response.json();
         setFileSetIsCreated(true);
+        console.log(
+          "FileSet created, initializing ZIP send for ID:",
+          newFileSet.id,
+        );
+
+        await sendFileSet(newFileSet.id, recipientEmail, filesToUpload, () =>
+          alert("File set created and ZIP sent successfully!"),
+        );
       } else {
         const errorText = await response.text();
         alert(
@@ -177,6 +189,21 @@ function FileExplorer() {
                 Create File Set ({selectedPaths.length})
               </button>
             </>
+          )}
+
+          {(isProcessing || isError) && (
+            <div className="progress-bar-container">
+              <h3>
+                {isError
+                  ? "Sending Failed"
+                  : "Creating & Sending ZIP Archive..."}
+              </h3>
+              <ProgressBar
+                percent={progress}
+                message={statusMessage}
+                isError={isError}
+              />
+            </div>
           )}
 
           <div className="file-tree">
