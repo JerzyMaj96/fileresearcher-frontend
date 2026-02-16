@@ -25,24 +25,28 @@ export const useZipSender = () => {
   const sendFileSet = async (fileSetId, recipientEmail, files, onSuccess) => {
     setIsProcessing(true);
     setProgress(0);
-    setStatusMessage("Initializing...");
+    setStatusMessage("Connecting to progress server...");
     setIsError(false);
 
-    try {
-      const taskId = await fileSetService.initiateSend(
-        fileSetId,
-        recipientEmail,
-        files
-      );
-      console.log("Task ID:", taskId);
+    const socket = new SockJS(`${baseUrl}/ws`);
+    const stompClient = Stomp.over(socket);
+    stompClient.debug = () => {};
+    stompClientRef.current = stompClient;
 
-      const socket = new SockJS(`${baseUrl}/ws`);
-      const stompClient = Stomp.over(socket);
-      stompClientRef.current = stompClient;
+    stompClient.connect(
+      {},
+      async () => {
+        setStatusMessage("Initializing...");
 
-      stompClient.connect(
-        {},
-        () => {
+        try {
+          const taskId = await fileSetService.initiateSend(
+            fileSetId,
+            recipientEmail,
+            files,
+          );
+
+          console.log("Task ID received:", taskId);
+
           stompClient.subscribe(`/topic/progress/${taskId}`, (message) => {
             const body = JSON.parse(message.body);
             setProgress(body.percent);
@@ -53,27 +57,39 @@ export const useZipSender = () => {
               disconnect();
               setTimeout(() => setIsProcessing(false), 3000);
             } else if (body.percent >= 100) {
-              disconnect();
-              setTimeout(() => {
-                setIsProcessing(false);
-                if (onSuccess) onSuccess();
-              }, 1000);
+              finishSuccess(onSuccess);
             }
           });
-        },
-        (error) => {
-          console.error("Socket error", error);
+
+          setTimeout(() => {
+            finishSuccess(onSuccess);
+          }, 500);
+        } catch (error) {
+          console.error("Initiate send error:", error);
           setIsError(true);
-          setStatusMessage("Connection failed.");
-          disconnect();
+          setStatusMessage(error.message || "Failed to start sending.");
           setIsProcessing(false);
-        },
-      );
-    } catch (error) {
-      setIsError(true);
-      setStatusMessage(error.message);
+          disconnect();
+        }
+      },
+      (error) => {
+        console.error("Socket connection error:", error);
+        setIsError(true);
+        setStatusMessage("Could not connect to progress service.");
+        disconnect();
+        setIsProcessing(false);
+      },
+    );
+  };
+
+  const finishSuccess = (onSuccessCallback) => {
+    setProgress(100);
+    setStatusMessage("Completed successfully!");
+    disconnect();
+    setTimeout(() => {
       setIsProcessing(false);
-    }
+      if (onSuccessCallback) onSuccessCallback();
+    }, 1500);
   };
 
   return {
