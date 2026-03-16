@@ -14,8 +14,8 @@ export const AuthProvider = ({ children }) => {
         try {
           const userData = await authService.getCurrentUser();
           setUser(userData);
-        } catch (e) {
-          console.error("Auth check failed", e);
+        } catch (ex) {
+          console.error("Auth check failed", ex);
           setAuthToken(null);
         }
       }
