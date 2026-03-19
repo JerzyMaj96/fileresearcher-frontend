@@ -6,6 +6,7 @@ import { authFetch, baseUrl } from "../../api/api_helper";
 import { useAuth } from "../../hooks/useAuth";
 import { useZipSender } from "../../hooks/useZipSender";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
+import { getAllChildPaths } from "../../components/file_explorer_utils";
 
 function FileExplorer() {
   const { user } = useAuth();
@@ -64,19 +65,6 @@ function FileExplorer() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const getAllChildPaths = (node) => {
-    let paths = [];
-    if (node.directory && node.children?.length) {
-      node.children.forEach((child) => {
-        paths.push(child.path);
-        if (child.directory) {
-          paths = paths.concat(getAllChildPaths(child));
-        }
-      });
-    }
-    return paths;
   };
 
   const toggleSelect = (node) => {

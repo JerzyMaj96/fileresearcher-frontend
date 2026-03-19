@@ -7,7 +7,11 @@ import {
   FaFileAlt,
   FaFileImage,
 } from "react-icons/fa";
-import { formatSize } from "../../components/utils";
+import {
+  formatSize,
+  getIcon,
+  calculateDirectorySize,
+} from "../../components/file_explorer_utils";
 
 function FileNode({ node, toggleSelect, selectedPaths }) {
   const [expanded, setExpanded] = useState(false);
@@ -15,34 +19,6 @@ function FileNode({ node, toggleSelect, selectedPaths }) {
 
   const toggleExpand = () => {
     setExpanded(!expanded);
-  };
-
-  const getIcon = (filename, isDirectory, expanded) => {
-    if (isDirectory) {
-      return expanded ? (
-        <FaFolderOpen color="orange" />
-      ) : (
-        <FaFolder color="orange" />
-      );
-    }
-    const ext = filename.split(".").pop().toLowerCase();
-    if (ext === "pdf") return <FaFilePdf color="red" />;
-    if (["doc", "docx"].includes(ext)) return <FaFileWord color="blue" />;
-    if (["jpg", "jpeg", "png"].includes(ext))
-      return <FaFileImage color="green" />;
-    return <FaFileAlt color="gray" />;
-  };
-
-  const calculateDirectorySize = (node) => {
-    if (!node.directory) {
-      return node.size || 0;
-    }
-    if (!node.children) return 0;
-
-    return node.children.reduce(
-      (total, child) => total + calculateDirectorySize(child),
-      0,
-    );
   };
 
   return (
