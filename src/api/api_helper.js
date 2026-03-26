@@ -31,7 +31,8 @@ export const authFetch = (method, url, body) => {
     options.body = body instanceof FormData ? body : JSON.stringify(body);
   }
 
-  return fetch(url, options);
+  const finalUrl = url.startsWith("http") ? url : `${baseUrl}${url}`;
+  return fetch(finalUrl, options);
 };
 
 export const baseUrl = import.meta.env.VITE_API_BASE_URL;

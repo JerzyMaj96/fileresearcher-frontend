@@ -4,7 +4,7 @@ import ZipArchivesInput from "./ZipArchivesInput";
 import { FaFileArchive } from "react-icons/fa";
 import { zipService } from "../../api/services"; 
 import { useAuth } from "../../hooks/useAuth"; 
-import { formatSize } from "../../components/utils";
+import { formatSize } from "../../components/file_explorer_utils";
 
 function ZipArchivesPage() {
   const { user } = useAuth();

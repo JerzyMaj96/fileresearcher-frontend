@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./FileExplorer.css";
 import FileNode from "./FileNode";
 import PathInput from "./PathInput";
-import { authFetch, baseUrl } from "../../api/api_helper";
+import { authFetch } from "../../api/api_helper";
 import { useAuth } from "../../hooks/useAuth";
 import { useZipSender } from "../../hooks/useZipSender";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
@@ -50,7 +50,7 @@ function FileExplorer() {
     try {
       const response = await authFetch(
         "POST",
-        `${baseUrl}/file-researcher/explorer/upload`,
+        `/file-researcher/explorer/upload`,
         formData,
       );
 
@@ -104,7 +104,7 @@ function FileExplorer() {
     try {
       const response = await authFetch(
         "POST",
-        `${baseUrl}/file-researcher/file-sets/upload`,
+        `/file-researcher/file-sets/upload`,
         formData,
       );
       if (response.ok) {

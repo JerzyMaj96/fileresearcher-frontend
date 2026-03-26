@@ -4,12 +4,12 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./Header.css";
-import { authFetch, baseUrl } from "../../api/api_helper";
-import { useAuth } from "../../hooks/useAuth"; 
+import { authFetch } from "../../api/api_helper";
+import { useAuth } from "../../hooks/useAuth";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, logout } = useAuth(); 
+  const { user, logout } = useAuth();
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
   const closeMenu = () => setMenuOpen(false);
@@ -22,12 +22,12 @@ function Header() {
     try {
       const response = await authFetch(
         "DELETE",
-        `${baseUrl}/file-researcher/users/delete-me`
+        `/file-researcher/users/delete-me`,
       );
 
       if (response.ok) {
         alert("Account deleted successfully");
-        logout(); 
+        logout();
       } else {
         alert("Failed to delete account");
       }
@@ -42,7 +42,7 @@ function Header() {
         <HomeFilledIcon />
         <h1>File Researcher App</h1>
       </div>
-      
+
       {user && (
         <div className="header-user">
           <div className="user-box" onClick={toggleMenu}>
@@ -51,7 +51,12 @@ function Header() {
           </div>
           {menuOpen && (
             <div className="user-menu">
-              <button onClick={() => { logout(); closeMenu(); }}>
+              <button
+                onClick={() => {
+                  logout();
+                  closeMenu();
+                }}
+              >
                 <LogoutIcon className="logout-icon" /> Log out
               </button>
               <button onClick={handleDeleteUser} className="delete-btn">

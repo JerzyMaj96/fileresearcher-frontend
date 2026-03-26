@@ -1,12 +1,4 @@
-import React, { useState } from "react";
-import {
-  FaFolder,
-  FaFolderOpen,
-  FaFilePdf,
-  FaFileWord,
-  FaFileAlt,
-  FaFileImage,
-} from "react-icons/fa";
+import { useState } from "react";
 import {
   formatSize,
   getIcon,

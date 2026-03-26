@@ -1,3 +1,12 @@
+import {
+  FaFolder,
+  FaFolderOpen,
+  FaFilePdf,
+  FaFileWord,
+  FaFileAlt,
+  FaFileImage,
+} from "react-icons/fa";
+
 // FileExplorer
 
 export const getAllChildPaths = (node) => {

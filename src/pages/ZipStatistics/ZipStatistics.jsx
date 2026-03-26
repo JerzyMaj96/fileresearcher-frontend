@@ -3,7 +3,7 @@ import "./ZipStatistics.css";
 import ZipStatisticsInput from "./ZipStatisticsInput";
 import { zipService } from "../../api/services";
 import { useAuth } from "../../hooks/useAuth";
-import { formatSize } from "../../components/utils";
+import { formatSize } from "../../components/file_explorer_utils";
 
 function ZipStatistics() {
   const { user } = useAuth();
